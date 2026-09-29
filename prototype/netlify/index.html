@@ -1,0 +1,804 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#070A10">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>FitVibe AI | 3D Dangal Wrestling & Campus Fitness</title>
+
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" href="https://img.icons8.com/color/96/strength.png" type="image/png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cinzel:wght@700;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Space Grotesk"', 'sans-serif'],
+                        wrestling: ['"Cinzel"', 'serif'],
+                    },
+                    colors: {
+                        dark: {
+                            base: '#070A10',
+                            surface: '#0E1424',
+                            card: '#131C30',
+                            border: 'rgba(255, 255, 255, 0.08)'
+                        },
+                        dangal: {
+                            gold: '#F59E0B',
+                            amber: '#D97706',
+                            rust: '#EA580C',
+                            crimson: '#DC2626',
+                            emerald: '#10B981'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Three.js CDN for 3D Visualizer -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- MediaPipe Pose CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+
+    <style>
+        html, body {
+            overflow-x: hidden;
+            touch-action: pan-y;
+        }
+        body {
+            background-color: #070A10;
+            color: #F8FAFC;
+            -webkit-tap-highlight-color: transparent;
+            min-height: 100vh;
+        }
+        button, a {
+            touch-action: manipulation;
+        }
+
+        /* 3D Glassmorphism Cards */
+        .card-3d {
+            background: linear-gradient(135deg, rgba(19, 28, 48, 0.85) 0%, rgba(13, 20, 36, 0.9) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(255, 255, 255, 0.05);
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        .card-3d:hover {
+            box-shadow: 0 24px 48px -12px rgba(245, 158, 11, 0.25), 0 0 20px rgba(245, 158, 11, 0.15);
+        }
+
+        .content-3d-pop {
+            transform: translateZ(28px);
+        }
+
+        .btn-3d {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.15s ease;
+            box-shadow: 0 6px 0 #9A3412, 0 10px 18px rgba(0,0,0,0.4);
+        }
+
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #9A3412, 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .video-box {
+            position: relative;
+            width: 100%;
+            border-radius: 1.25rem;
+            overflow: hidden;
+            background: #04060B;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(245, 158, 11, 0.1);
+        }
+
+        #webcam_video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+
+        #pose_canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: scaleX(-1);
+            pointer-events: none;
+        }
+
+        /* 3D Combat Screen Shake */
+        .shake-impact {
+            animation: screenShake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes screenShake {
+            10%, 90% { transform: translate3d(-2px, 1px, 0) rotateZ(-0.5deg); }
+            20%, 80% { transform: translate3d(3px, -2px, 0) rotateZ(0.5deg); }
+            30%, 50%, 70% { transform: translate3d(-4px, 2px, 0) rotateZ(-1deg); }
+            40%, 60% { transform: translate3d(4px, -1px, 0) rotateZ(1deg); }
+        }
+
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom, 1rem);
+        }
+
+        #three_canvas_container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: auto;
+            cursor: grab;
+        }
+        #three_canvas_container:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans pb-24 md:pb-6" id="app_body">
+
+    <!-- Top Live Banner with Global Public Link -->
+    <div class="bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 text-white text-xs py-1.5 px-4 font-bold flex items-center justify-between shadow-lg">
+        <div class="flex items-center space-x-2 truncate">
+            <span class="animate-bounce text-sm">ðŸ¤¼</span>
+            <span class="font-wrestling uppercase tracking-wider text-[11px]">3D Dangal Wrestling & Fitness Arena Active</span>
+            <span class="hidden sm:inline bg-black/30 px-2 py-0.5 rounded text-[10px]">AICTE SIH-26196</span>
+        </div>
+        <div class="flex items-center space-x-2">
+            <a href="https://infinite-massive-andale-stainless.trycloudflare.com" target="_blank" class="bg-black/40 hover:bg-black/60 px-2.5 py-0.5 rounded-full text-[10px] font-mono flex items-center space-x-1 transition text-amber-200 border border-amber-400/30">
+                <span>ðŸŒ Public Mobile Link</span>
+                <i data-lucide="external-link" class="w-3 h-3"></i>
+            </a>
+            <button onclick="openQrModal()" class="bg-white/20 hover:bg-white/30 px-2.5 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider">
+                ðŸ“± QR
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="sticky top-0 z-40 bg-[#070A10]/95 backdrop-blur-md border-b border-white/[0.08]">
+        <div class="max-w-6xl mx-auto px-4 py-2.5 flex items-center justify-between">
+            <!-- Brand -->
+            <div class="flex items-center space-x-2.5">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 via-orange-600 to-red-600 flex items-center justify-center font-bold text-white shadow-lg shadow-orange-500/30">
+                    âš¡
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-display font-extrabold text-lg tracking-tight text-white">FitVibe AI</span>
+                        <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 font-wrestling">3D DANGAL EDITION</span>
+                    </div>
+                    <span class="text-[10px] text-slate-400 block -mt-0.5">Real-time Vision Coach & Campus Ecosystem</span>
+                </div>
+            </div>
+
+            <!-- Profile & Gong Right -->
+            <div class="flex items-center space-x-2">
+                <!-- Gong Sound Test -->
+                <button onclick="playGongSound()" class="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-bold flex items-center space-x-1.5 transition shadow-sm" title="Ring Arena Gong">
+                    <span>ðŸ””</span>
+                    <span class="hidden sm:inline">Arena Gong</span>
+                </button>
+
+                <!-- Pehelwan Level Chip -->
+                <div class="flex items-center space-x-2 bg-slate-800/80 border border-amber-500/30 rounded-xl px-3 py-1.5">
+                    <span class="text-xs font-bold text-white" id="header_user_name">Sahil (You)</span>
+                    <span class="text-xs text-amber-400 font-extrabold px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 font-wrestling" id="header_wrestler_tier">
+                        Malla ðŸ¦¾
+                    </span>
+                    <span class="text-xs text-orange-400 font-black hidden sm:inline" id="header_user_xp">
+                        2,273 XP
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Desktop Navigation Tabs (Full English) -->
+    <nav class="hidden md:block bg-[#0B101D] border-b border-white/[0.06]">
+        <div class="max-w-6xl mx-auto px-4 flex space-x-2">
+            <button onclick="switchTab('coach')" id="tab_coach" class="tab-btn py-3 px-4 font-semibold text-sm border-b-2 border-amber-500 text-amber-400 flex items-center space-x-2 transition">
+                <i data-lucide="swords" class="w-4 h-4 text-amber-400"></i>
+                <span>3D AI Workout Coach</span>
+            </button>
+            <button onclick="switchTab('leaderboard')" id="tab_leaderboard" class="tab-btn py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-400 hover:text-white flex items-center space-x-2 transition">
+                <i data-lucide="trophy" class="w-4 h-4"></i>
+                <span>Campus Leaderboard</span>
+            </button>
+            <button onclick="switchTab('nutrition')" id="tab_nutrition" class="tab-btn py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-400 hover:text-white flex items-center space-x-2 transition">
+                <i data-lucide="utensils" class="w-4 h-4"></i>
+                <span>Warrior Diet & Canteen</span>
+            </button>
+            <button onclick="switchTab('habits')" id="tab_habits" class="tab-btn py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-400 hover:text-white flex items-center space-x-2 transition">
+                <i data-lucide="activity" class="w-4 h-4"></i>
+                <span>Habits & Session Logs</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-6xl w-full mx-auto p-3 sm:p-5 pb-32 sm:pb-8">
+
+        <!-- ============================================== -->
+        <!-- TAB 1: 3D DANGAL AI WORKOUT COACH -->
+        <!-- ============================================== -->
+        <section id="section_coach" class="space-y-4">
+            <!-- Exercise Selector Strip -->
+            <div class="card-3d p-3 rounded-2xl flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <!-- Select Exercise Pills (English) -->
+                <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+                    <button onclick="selectExercise('Baithak')" id="ex_Baithak" class="ex-pill px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-black shadow-md shadow-amber-500/30 whitespace-nowrap transition flex items-center space-x-1">
+                        <span>ðŸ¤¼</span>
+                        <span>Desi Baithak (Hindu Squats)</span>
+                    </button>
+                    <button onclick="selectExercise('Dand')" id="ex_Dand" class="ex-pill px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/80 text-slate-300 hover:text-white whitespace-nowrap transition flex items-center space-x-1">
+                        <span>ðŸ¦¾</span>
+                        <span>Desi Dand (Hindu Push-ups)</span>
+                    </button>
+                    <button onclick="selectExercise('SuryaNamaskar')" id="ex_SuryaNamaskar" class="ex-pill px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/80 text-slate-300 hover:text-white whitespace-nowrap transition flex items-center space-x-1">
+                        <span>ðŸ§˜</span>
+                        <span>Surya Namaskar Flow</span>
+                    </button>
+                    <button onclick="selectExercise('Bridge')" id="ex_Bridge" class="ex-pill px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/80 text-slate-300 hover:text-white whitespace-nowrap transition flex items-center space-x-1">
+                        <span>ðŸ›¡ï¸</span>
+                        <span>Wrestler Neck Bridge</span>
+                    </button>
+                </div>
+
+                <!-- Fast Actions -->
+                <div class="flex items-center justify-end space-x-2">
+                    <button id="btn_toggle_voice" onclick="toggleVoice()" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl border border-slate-700 transition" title="Toggle audio commentary">
+                        <i id="icon_voice" data-lucide="volume-2" class="w-4 h-4 text-amber-400"></i>
+                    </button>
+                    <button id="btn_flip_cam" onclick="flipCamera()" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl border border-slate-700 transition" title="Flip Camera">
+                        <i data-lucide="refresh-cw" class="w-4 h-4 text-orange-400"></i>
+                    </button>
+                    <button id="btn_sim_rep" onclick="simulateRep()" class="px-3.5 py-1.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-xs font-bold rounded-xl transition flex items-center space-x-1 shadow-md btn-3d">
+                        <span>ðŸ’¥</span>
+                        <span>Simulate 1 Rep</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Video Screen & 3D HUD Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                <!-- Video Screen (7 cols) -->
+                <div class="lg:col-span-7 flex flex-col space-y-3">
+                    <div class="video-box aspect-[4/3] sm:aspect-[16/10] md:min-h-[420px] shadow-2xl border border-amber-500/25 relative" id="video_wrapper">
+                        <video id="webcam_video" playsinline webkit-playsinline muted autoplay></video>
+                        <canvas id="pose_canvas"></canvas>
+
+                        <!-- Golden Shockwave Ripple Overlay -->
+                        <div id="combat_impact_overlay" class="absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300 bg-radial from-amber-500/30 via-transparent to-transparent"></div>
+
+                        <!-- Standby State Placeholder -->
+                        <div id="camera_placeholder" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-[#070A10]">
+                            <div class="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-3 shadow-lg shadow-amber-500/10">
+                                <span class="text-3xl">ðŸ¤¼</span>
+                            </div>
+                            <h3 class="text-base font-bold text-white mb-1 font-wrestling uppercase tracking-wider text-amber-400">3D AI Camera Ready</h3>
+                            <p class="text-xs text-slate-400 max-w-sm mb-3">Position your phone or webcam so your full body is visible. Real-time 3D landmark mesh calculates depth and joint angles with 100% device privacy.</p>
+                            <button onclick="toggleCamera()" class="px-6 py-2.5 bg-gradient-to-r from-amber-500 via-orange-600 to-red-600 hover:from-amber-400 hover:to-red-500 text-white font-black text-sm rounded-xl shadow-lg shadow-orange-500/30 transition flex items-center space-x-2 btn-3d">
+                                <i data-lucide="swords" class="w-4 h-4"></i>
+                                <span>Start 3D Camera Coach</span>
+                            </button>
+                            <span class="text-[11px] text-slate-400 mt-3 block">ðŸ“± Mobile: Tap <b>Allow</b> when browser prompts for camera permission.</span>
+                        </div>
+
+                        <!-- Top In-Camera HUD -->
+                        <div id="camera_hud" class="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none hidden">
+                            <div class="bg-black/75 backdrop-blur-md px-3 py-1.5 rounded-xl border border-amber-500/30 flex items-center space-x-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+                                <span id="hud_exercise_label" class="text-xs font-black text-amber-300 uppercase tracking-wider font-wrestling">DESI BAITHAK</span>
+                            </div>
+                            <div id="hud_feedback_badge" class="bg-amber-500 text-black font-black text-xs px-3 py-1.5 rounded-xl shadow-lg font-wrestling">
+                                Ready! Step into arena
+                            </div>
+                        </div>
+
+                        <!-- Bottom Joint Angle Bar -->
+                        <div id="camera_bottom_bar" class="absolute bottom-3 left-3 right-3 bg-black/75 backdrop-blur-md p-2.5 rounded-xl border border-amber-500/30 pointer-events-none hidden">
+                            <div class="flex items-center justify-between text-xs font-semibold mb-1">
+                                <span class="text-slate-300">3D Joint Angle: <span id="hud_angle_val" class="text-amber-400 font-bold">175Â°</span></span>
+                                <span id="hud_stage_val" class="text-orange-400 font-bold uppercase font-wrestling">STAGE: UP</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+                                <div id="hud_angle_progress" class="bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 h-2.5 rounded-full transition-all duration-75" style="width: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Voice Commentary Strip -->
+                    <div class="card-3d p-3 rounded-2xl flex items-center justify-between">
+                        <div class="flex items-center space-x-2.5 overflow-hidden">
+                            <span class="text-xl">ðŸŽ™ï¸</span>
+                            <div class="truncate">
+                                <span class="text-[10px] text-amber-400 font-extrabold uppercase block font-wrestling">AI Arena Commentary</span>
+                                <span id="coach_voice_text" class="text-xs font-bold text-white truncate block">"Step into camera view and power through each rep!"</span>
+                            </div>
+                        </div>
+                        <button id="btn_cam_main" onclick="toggleCamera()" class="px-4 py-1.5 bg-gradient-to-r from-amber-500 to-orange-600 text-black font-extrabold text-xs rounded-xl shadow-md transition whitespace-nowrap">
+                            <span id="btn_cam_text">Turn On Camera</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3D Metrics & Interactive 3D Trophy Panel (5 cols) -->
+                <div class="lg:col-span-5 flex flex-col space-y-3">
+                    <!-- Big Rep Counter 3D Card -->
+                    <div class="card-3d p-4 rounded-2xl relative overflow-hidden">
+                        <div class="flex items-center justify-between text-slate-400 mb-1">
+                            <span class="text-xs font-bold uppercase tracking-wider text-amber-400 font-wrestling">Completed Reps</span>
+                            <span class="text-[11px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold font-wrestling">Goal: 25</span>
+                        </div>
+
+                        <div class="flex items-center justify-between my-2 content-3d-pop">
+                            <div class="flex items-baseline space-x-2">
+                                <span id="metric_reps" class="font-display text-5xl font-black text-amber-400 tracking-tight">0</span>
+                                <span class="text-slate-400 text-xs font-bold">REPS</span>
+                            </div>
+
+                            <!-- Manual Stepper -->
+                            <div class="flex items-center space-x-1 bg-slate-800/80 border border-amber-500/30 rounded-xl p-1">
+                                <button onclick="adjustReps(-1)" class="w-7 h-7 rounded-lg bg-slate-700/60 hover:bg-slate-700 flex items-center justify-center font-bold text-sm text-slate-300">-</button>
+                                <button onclick="adjustReps(1)" class="w-7 h-7 rounded-lg bg-slate-700/60 hover:bg-slate-700 flex items-center justify-center font-bold text-sm text-slate-300">+</button>
+                            </div>
+                        </div>
+
+                        <!-- Accuracy & Calories -->
+                        <div class="grid grid-cols-2 gap-2 pt-2 border-t border-white/[0.06] text-xs">
+                            <div>
+                                <span class="text-[10px] text-slate-400 block uppercase">3D Form Accuracy</span>
+                                <span class="text-base font-bold text-emerald-400"><span id="metric_accuracy">95</span>%</span>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-400 block uppercase">Calories Burned</span>
+                                <span class="text-base font-bold text-orange-400"><span id="metric_calories">0.0</span> kcal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive 3D Trophy / Championship Card (WebGL Canvas) -->
+                    <div class="card-3d p-3.5 rounded-2xl relative overflow-hidden h-36 flex items-center justify-between border border-amber-500/40 bg-gradient-to-r from-amber-500/10 via-slate-900 to-slate-900">
+                        <!-- 3D Canvas Box -->
+                        <div class="w-28 h-28 relative rounded-xl overflow-hidden bg-black/40 border border-amber-500/30 shadow-inner">
+                            <div id="three_canvas_container"></div>
+                            <span class="absolute bottom-1 right-1 text-[8px] text-amber-300/80 bg-black/60 px-1 rounded pointer-events-none">3D Drag</span>
+                        </div>
+
+                        <!-- Title & XP info -->
+                        <div class="flex-1 pl-3 content-3d-pop">
+                            <span class="text-[10px] text-amber-400 uppercase font-black tracking-wider block font-wrestling">Champion Division</span>
+                            <h4 class="font-bold text-white text-sm" id="pehelwan_title">Kesari Contender</h4>
+                            <span class="text-[11px] text-slate-400 block mt-0.5" id="pehelwan_next_tier">Next: Rustam-e-Hind Titan (+227 XP)</span>
+                            <span class="mt-2 inline-block px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold border border-amber-500/30">
+                                3D Trophy Model Active
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Form Checklist -->
+                    <div class="card-3d p-3.5 rounded-2xl space-y-2">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between font-wrestling">
+                            <span>Biomechanical 3D Checklist</span>
+                            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                        </h4>
+                        <div class="space-y-1.5 text-xs">
+                            <div id="check_visibility" class="flex items-center space-x-2 text-slate-400">
+                                <span class="w-4 h-4 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">âšª</span>
+                                <span>Full Body Landmark Depth</span>
+                            </div>
+                            <div id="check_depth" class="flex items-center space-x-2 text-slate-400">
+                                <span class="w-4 h-4 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">âšª</span>
+                                <span>Deep Squat Flexion (&lt; 95Â°)</span>
+                            </div>
+                            <div id="check_back" class="flex items-center space-x-2 text-slate-400">
+                                <span class="w-4 h-4 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">âšª</span>
+                                <span>Upright Torso & Neutral Spine</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Save Workout CTA Button -->
+                    <button onclick="saveCurrentWorkout()" class="w-full py-3 bg-gradient-to-r from-amber-500 via-orange-600 to-red-600 hover:from-amber-400 hover:to-red-500 text-white font-black text-sm rounded-2xl shadow-lg shadow-orange-500/30 transition flex items-center justify-center space-x-2 btn-3d">
+                        <i data-lucide="award" class="w-4 h-4"></i>
+                        <span>Finish & Save Workout (+XP)</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- TAB 2: CAMPUS LEADERBOARD -->
+        <!-- ============================================== -->
+        <section id="section_leaderboard" class="space-y-4 hidden">
+            <!-- Header -->
+            <div class="card-3d p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center space-x-2">
+                        <span>ðŸ† Campus & Hostel Arena Rankings</span>
+                        <span class="text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold font-wrestling">Week 14 League</span>
+                    </h2>
+                    <p class="text-xs text-slate-400">Real-time student rankings across colleges, hostels, and departments.</p>
+                </div>
+                <div class="flex items-center space-x-1.5 bg-slate-800/80 p-1 rounded-xl">
+                    <button class="px-2.5 py-1 text-xs font-bold rounded-lg bg-amber-500 text-black font-wrestling">All Warriors</button>
+                    <button class="px-2.5 py-1 text-xs font-semibold rounded-lg text-slate-400 hover:text-white">Hostel B</button>
+                </div>
+            </div>
+
+            <!-- Top 3 Podium Cards (3D Tilt) -->
+            <div class="grid grid-cols-3 gap-2 sm:gap-4">
+                <!-- 2nd Place -->
+                <div class="card-3d p-3 rounded-2xl text-center flex flex-col justify-between">
+                    <div>
+                        <span class="text-2xl">ðŸ¥ˆ</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase block font-wrestling">Runner Up #2</span>
+                        <h4 class="font-bold text-white text-xs sm:text-sm mt-0.5 truncate">Aarav Sharma</h4>
+                        <span class="text-[10px] text-slate-400 block truncate">Hostel A</span>
+                    </div>
+                    <div class="mt-2 text-xs font-black text-blue-400">2,120 XP</div>
+                </div>
+
+                <!-- 1st Place (Sahil) -->
+                <div class="card-3d p-3.5 rounded-2xl text-center border-amber-500/60 bg-gradient-to-b from-amber-500/20 to-slate-900/60 flex flex-col justify-between shadow-lg shadow-amber-500/20">
+                    <div>
+                        <span class="text-3xl">ðŸ¥‡</span>
+                        <span class="text-[10px] font-black text-amber-400 uppercase block font-wrestling">Champion #1 (You)</span>
+                        <h4 class="font-extrabold text-white text-xs sm:text-base mt-0.5 truncate">Sahil</h4>
+                        <span class="text-[10px] text-slate-300 block truncate">Hostel B</span>
+                    </div>
+                    <div id="podium_user_xp" class="mt-2 text-xs font-black text-amber-300">2,273 XP ðŸ”¥</div>
+                </div>
+
+                <!-- 3rd Place -->
+                <div class="card-3d p-3 rounded-2xl text-center border-orange-500/40 flex flex-col justify-between">
+                    <div>
+                        <span class="text-2xl">ðŸ¥‰</span>
+                        <span class="text-[10px] font-bold text-orange-400 uppercase block font-wrestling">Bronze #3</span>
+                        <h4 class="font-bold text-white text-xs sm:text-sm mt-0.5 truncate">Pooja Kulkarni</h4>
+                        <span class="text-[10px] text-slate-400 block truncate">Hostel C</span>
+                    </div>
+                    <div class="mt-2 text-xs font-black text-orange-400">1,950 XP</div>
+                </div>
+            </div>
+
+            <!-- Full Standings List -->
+            <div class="card-3d rounded-2xl overflow-hidden">
+                <div class="p-3 border-b border-white/[0.06] flex items-center justify-between">
+                    <span class="text-xs font-bold text-white uppercase tracking-wider font-wrestling">All Student Contenders</span>
+                    <span class="text-[11px] text-slate-400">Real-time sync</span>
+                </div>
+                <div class="divide-y divide-white/[0.06]" id="leaderboard_table_body"></div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- TAB 3: WARRIOR DIET & NUTRITION -->
+        <!-- ============================================== -->
+        <section id="section_nutrition" class="space-y-4 hidden">
+            <!-- Header Summary -->
+            <div class="card-3d p-4 rounded-2xl">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-3">
+                    <div>
+                        <h2 class="text-lg font-bold text-white flex items-center space-x-2">
+                            <span>ðŸ¥— Warrior Diet & Canteen Nutrition</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold font-wrestling">Strength & Stamina</span>
+                        </h2>
+                        <p class="text-xs text-slate-400">Optimize protein and calories from college canteen and mess food on a student budget.</p>
+                    </div>
+                    <button onclick="logCurrentMeal()" class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-black font-extrabold text-xs rounded-xl shadow-md transition flex items-center justify-center space-x-1.5 btn-3d">
+                        <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                        <span>Save Meal to Daily Log (+30 XP)</span>
+                    </button>
+                </div>
+
+                <!-- Macro Progress -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-white/[0.06] text-xs">
+                    <div class="bg-slate-900/50 p-2.5 rounded-xl border border-white/[0.04]">
+                        <span class="text-[10px] text-slate-400 block uppercase">Calories</span>
+                        <span class="font-bold text-white"><span id="nutri_cal">0</span> / 2200 kcal</span>
+                    </div>
+                    <div class="bg-slate-900/50 p-2.5 rounded-xl border border-white/[0.04]">
+                        <span class="text-[10px] text-slate-400 block uppercase">Protein</span>
+                        <span class="font-bold text-emerald-400"><span id="nutri_prot">0</span> / 75g</span>
+                    </div>
+                    <div class="bg-slate-900/50 p-2.5 rounded-xl border border-white/[0.04]">
+                        <span class="text-[10px] text-slate-400 block uppercase">Carbs</span>
+                        <span class="font-bold text-blue-400"><span id="nutri_carbs">0</span> / 260g</span>
+                    </div>
+                    <div class="bg-slate-900/50 p-2.5 rounded-xl border border-white/[0.04]">
+                        <span class="text-[10px] text-slate-400 block uppercase">Fats</span>
+                        <span class="font-bold text-purple-400"><span id="nutri_fats">0</span> / 60g</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Food Grid & Thali Container -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                <div class="lg:col-span-8 space-y-3">
+                    <div class="relative">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-3"></i>
+                        <input id="food_search_input" oninput="filterFoodItems()" type="text" placeholder="Search roti, dal, paneer, sprouts, eggs..." class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500/50">
+                    </div>
+                    <div id="food_items_grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"></div>
+                </div>
+
+                <!-- Your Plate / Thali -->
+                <div class="lg:col-span-4 card-3d p-4 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between pb-2 border-b border-white/[0.06] mb-3">
+                            <span class="text-xs font-bold text-white font-wrestling">ðŸ½ï¸ Current Plate (Thali)</span>
+                            <button onclick="clearPlate()" class="text-[11px] text-red-400 hover:underline">Clear</button>
+                        </div>
+                        <div id="plate_items_list" class="space-y-1.5 text-xs max-h-56 overflow-y-auto">
+                            <p class="text-slate-500 py-6 text-center text-xs">Your plate is empty. Select food items on the left!</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-white/[0.06] bg-slate-900/40 p-2.5 rounded-xl">
+                        <span class="text-[10px] font-bold text-amber-400 block mb-0.5">ðŸ’¡ Student Nutrition Insight:</span>
+                        <p id="diet_tip_text" class="text-[11px] text-slate-300">Add 1 bowl of Boiled Moong Sprouts or 2 Boiled Eggs to achieve 25g+ protein for muscle recovery on a budget.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- TAB 4: HABITS & SESSION HISTORY -->
+        <!-- ============================================== -->
+        <section id="section_habits" class="space-y-4 hidden">
+            <!-- 2-Column Grid: Featured shadcn ActivityCard & Habit Widgets -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                <!-- Column 1: shadcn ActivityCard (7 cols on lg) -->
+                <div class="lg:col-span-7">
+                    <div class="relative h-full rounded-3xl p-5 sm:p-6 bg-[#0E1526]/90 border border-zinc-800 hover:border-zinc-700 transition-all duration-300 card-3d shadow-xl">
+                        <!-- Header -->
+                        <div class="flex items-center justify-between gap-3 mb-6">
+                            <div class="flex items-center gap-3">
+                                <div class="p-2.5 rounded-full bg-zinc-800/80 border border-zinc-700/60 shadow-inner">
+                                    <i data-lucide="activity" class="w-5 h-5 text-[#FF2D55]"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base sm:text-lg font-bold text-white tracking-tight">
+                                        Today's Progress
+                                    </h3>
+                                    <p class="text-xs text-zinc-400">
+                                        Apple Fitness Activity & Campus Goals
+                                    </p>
+                                </div>
+                            </div>
+                            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                Active Sync
+                            </span>
+                        </div>
+
+                        <!-- 3 Metrics Rings -->
+                        <div class="grid grid-cols-3 gap-2 sm:gap-4 my-2">
+                            <!-- Move Ring -->
+                            <div class="relative flex flex-col items-center group cursor-pointer" id="ring_move_box">
+                                <div class="relative w-20 h-20 sm:w-24 sm:h-24">
+                                    <div class="absolute inset-0 rounded-full border-4 border-zinc-800/60"></div>
+                                    <div id="ring_move_indicator" class="absolute inset-0 rounded-full border-4 transition-all duration-500 group-hover:scale-105" style="border-color: #FF2D55; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 85%);"></div>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                        <span id="metric_ring_move" class="text-lg sm:text-xl font-black text-white">420</span>
+                                        <span class="text-[10px] text-zinc-400 font-bold">cal</span>
+                                    </div>
+                                </div>
+                                <span class="mt-2.5 text-xs font-semibold text-zinc-300">Move</span>
+                                <span class="text-[10px] text-zinc-500 font-bold" id="metric_ring_move_pct">85%</span>
+                            </div>
+
+                            <!-- Exercise Ring -->
+                            <div class="relative flex flex-col items-center group cursor-pointer" id="ring_exercise_box">
+                                <div class="relative w-20 h-20 sm:w-24 sm:h-24">
+                                    <div class="absolute inset-0 rounded-full border-4 border-zinc-800/60"></div>
+                                    <div id="ring_exercise_indicator" class="absolute inset-0 rounded-full border-4 transition-all duration-500 group-hover:scale-105" style="border-color: #2CD758; clip-path: polygon(0 0, 100% 0, 100% 70%, 0 70%);"></div>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                        <span id="metric_ring_exercise" class="text-lg sm:text-xl font-black text-white">35</span>
+                                        <span class="text-[10px] text-zinc-400 font-bold">min</span>
+                                    </div>
+                                </div>
+                                <span class="mt-2.5 text-xs font-semibold text-zinc-300">Exercise</span>
+                                <span class="text-[10px] text-zinc-500 font-bold" id="metric_ring_exercise_pct">70%</span>
+                            </div>
+
+                            <!-- Stand Ring -->
+                            <div class="relative flex flex-col items-center group cursor-pointer" id="ring_stand_box">
+                                <div class="relative w-20 h-20 sm:w-24 sm:h-24">
+                                    <div class="absolute inset-0 rounded-full border-4 border-zinc-800/60"></div>
+                                    <div id="ring_stand_indicator" class="absolute inset-0 rounded-full border-4 transition-all duration-500 group-hover:scale-105" style="border-color: #007AFF; clip-path: polygon(0 0, 100% 0, 100% 83%, 0 83%);"></div>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                        <span id="metric_ring_stand" class="text-lg sm:text-xl font-black text-white">10</span>
+                                        <span class="text-[10px] text-zinc-400 font-bold">hrs</span>
+                                    </div>
+                                </div>
+                                <span class="mt-2.5 text-xs font-semibold text-zinc-300">Stand</span>
+                                <span class="text-[10px] text-zinc-500 font-bold" id="metric_ring_stand_pct">83%</span>
+                            </div>
+                        </div>
+
+                        <!-- Goals Section -->
+                        <div class="mt-6 space-y-4">
+                            <div class="h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent"></div>
+
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="flex items-center gap-2 text-xs sm:text-sm font-semibold text-zinc-200">
+                                        <i data-lucide="target" class="w-4 h-4 text-amber-400"></i>
+                                        <span>Today's Daily Goals</span>
+                                    </h4>
+                                    <button
+                                        type="button"
+                                        onclick="handleAddGoalPrompt()"
+                                        class="p-1.5 rounded-full hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors border border-zinc-700/60"
+                                        title="Add New Daily Goal"
+                                    >
+                                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Dynamic Goal Items List -->
+                                <div id="activity_goals_list" class="space-y-2">
+                                    <!-- Populated via JS -->
+                                </div>
+                            </div>
+
+                            <div class="pt-3 border-t border-zinc-800/80 flex items-center justify-between">
+                                <button
+                                    onclick="viewActivityDetails()"
+                                    class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-400 hover:text-white transition-colors duration-200"
+                                >
+                                    <span>View Activity Details</span>
+                                    <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                                </button>
+                                <span class="text-[10px] text-zinc-500">Auto-synced with workout reps</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column 2: Habit Cards (5 cols on lg) -->
+                <div class="lg:col-span-5 flex flex-col space-y-3">
+                    <!-- Water -->
+                    <div class="card-3d p-4 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] font-bold uppercase text-blue-400 block mb-1">Hydration Loop</span>
+                            <div class="flex items-baseline space-x-2">
+                                <span id="habit_water_count" class="font-display text-4xl font-black text-white">5</span>
+                                <span class="text-slate-400 text-xs">/ 8 glasses (2.0L)</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">Prevents muscle cramping and fatigue during training.</p>
+                        </div>
+                        <button onclick="drinkWater()" class="mt-3 w-full py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition flex items-center justify-center space-x-1 btn-3d">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                            <span>Log 1 Glass of Water</span>
+                        </button>
+                    </div>
+
+                    <!-- Study Break Timer -->
+                    <div class="card-3d p-4 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] font-bold uppercase text-emerald-400 block mb-1">Desk Posture & Focus</span>
+                            <div class="font-display text-3xl font-black text-white">25m <span class="text-xs font-normal text-slate-400">focus timer</span></div>
+                            <p class="text-xs text-slate-400 mt-1">Micro-stretches prevent forward head posture.</p>
+                        </div>
+                        <button onclick="startPostureTimer()" id="btn_posture_timer" class="mt-3 w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl transition flex items-center justify-center space-x-1 btn-3d">
+                            <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                            <span id="posture_timer_text">Start 25m Focus Block</span>
+                        </button>
+                    </div>
+
+                    <!-- Streak Card -->
+                    <div class="card-3d p-4 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] font-bold uppercase text-amber-400 block mb-1 font-wrestling">Active Training Streak</span>
+                            <div class="flex items-baseline space-x-2">
+                                <span id="habit_streak_val" class="font-display text-4xl font-black text-white">7</span>
+                                <span class="text-amber-400 text-xs font-bold">Days Active ðŸ”¥</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">Reach 10 days to unlock the 'Arena Titan' badge.</p>
+                        </div>
+                        <div class="mt-2 py-1 bg-amber-500/20 text-amber-300 font-bold text-[11px] rounded-xl text-center border border-amber-500/30">
+                            Shield Active (1 Free Freeze Available)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Workout History -->
+            <div class="card-3d rounded-2xl overflow-hidden">
+                <div class="p-3 border-b border-white/[0.06] flex items-center justify-between">
+                    <span class="text-xs font-bold text-white uppercase tracking-wider font-wrestling">Recent AI Training Sessions</span>
+                    <span class="text-[11px] text-slate-400">Stored in SQLite</span>
+                </div>
+                <div id="history_list" class="divide-y divide-white/[0.06]"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Mobile Bottom Navigation Bar (English) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#070A10]/95 backdrop-blur-xl border-t border-amber-500/20 px-2 py-2 flex items-center justify-around pb-safe">
+        <button onclick="switchTab('coach')" id="mob_tab_coach" class="mob-tab flex flex-col items-center text-amber-400 font-bold transition">
+            <span class="text-lg">ðŸ¤¼</span>
+            <span class="text-[10px] mt-0.5 font-wrestling">Coach</span>
+        </button>
+        <button onclick="switchTab('leaderboard')" id="mob_tab_leaderboard" class="mob-tab flex flex-col items-center text-slate-400 font-medium transition">
+            <span class="text-lg">ðŸ†</span>
+            <span class="text-[10px] mt-0.5">Rankings</span>
+        </button>
+        <button onclick="switchTab('nutrition')" id="mob_tab_nutrition" class="mob-tab flex flex-col items-center text-slate-400 font-medium transition">
+            <span class="text-lg">ðŸ¥—</span>
+            <span class="text-[10px] mt-0.5">Diet</span>
+        </button>
+        <button onclick="switchTab('habits')" id="mob_tab_habits" class="mob-tab flex flex-col items-center text-slate-400 font-medium transition">
+            <span class="text-lg">âš¡</span>
+            <span class="text-[10px] mt-0.5">Habits</span>
+        </button>
+    </nav>
+
+    <!-- Mobile Live Link & QR Modal -->
+    <div id="qr_modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="card-3d max-w-sm w-full p-5 rounded-3xl border border-amber-500/40 shadow-2xl space-y-4 text-center">
+            <div class="flex items-center justify-between pb-2 border-b border-white/[0.06]">
+                <h3 class="font-bold text-white text-sm flex items-center space-x-1.5 font-wrestling">
+                    <span>ðŸ“± Open on Any Mobile Device</span>
+                </h3>
+                <button onclick="closeQrModal()" class="text-slate-400 hover:text-white font-bold text-sm">âœ•</button>
+            </div>
+
+            <!-- QR Code -->
+            <div class="bg-white p-3 rounded-2xl inline-block shadow-lg mx-auto border-2 border-amber-500">
+                <img id="qr_code_img" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://infinite-massive-andale-stainless.trycloudflare.com" alt="QR Code" class="w-48 h-48 rounded-lg">
+            </div>
+
+            <div>
+                <p class="text-xs text-amber-300 font-bold mb-1">Scan with phone camera or visit URL:</p>
+                <div class="flex items-center justify-between bg-slate-900 border border-amber-500/40 px-3 py-2 rounded-xl text-xs font-mono text-amber-400">
+                    <span id="qr_mobile_url" class="truncate">https://infinite-massive-andale-stainless.trycloudflare.com</span>
+                    <button onclick="copyMobileUrl()" class="ml-2 bg-amber-500 text-black px-2 py-0.5 rounded font-sans text-[11px] font-bold">Copy</button>
+                </div>
+            </div>
+
+            <div class="text-[11px] text-slate-300 text-left bg-slate-800/60 p-2.5 rounded-xl border border-amber-500/20 space-y-1">
+                <p>âœ… <b>Global Public Access:</b> Works on 4G, 5G, or any Wi-Fi worldwide.</p>
+                <p>ðŸ”’ <b>Trusted Cloudflare SSL:</b> Camera permissions unlock immediately.</p>
+            </div>
+
+            <button onclick="closeQrModal()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl transition">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/pose_coach.js"></script>
+    <script src="./js/app.js"></script>
+</body>
+</html>
+

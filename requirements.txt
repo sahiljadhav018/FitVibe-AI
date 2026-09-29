@@ -1,0 +1,5 @@
+Flask>=2.3.0
+Flask-Cors>=4.0.0
+cryptography>=41.0.0
+python-pptx>=0.6.21
+requests>=2.31.0

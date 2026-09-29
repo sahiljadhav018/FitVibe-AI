@@ -1,0 +1,22 @@
+{
+  "name": "FitVibe AI - Student Fitness Ecosystem",
+  "short_name": "FitVibe AI",
+  "description": "Real-time AI Workout Coach & Student Fitness Ecosystem",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0E17",
+  "theme_color": "#0A0E17",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://img.icons8.com/color/192/strength.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://img.icons8.com/color/512/strength.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
