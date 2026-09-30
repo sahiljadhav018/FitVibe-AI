@@ -689,5 +689,5 @@ function handleAddGoalPrompt() {
 }
 
 function viewActivityDetails() {
-    alert("📊 Activity Details & Rings Breakdown:\n\n• Move: 420/500 cal burned (84%)\n• Exercise: 35/45 mins active (77%)\n• Stand: 10/12 hours with posture breaks (83%)\n\nKeep training to close all 3 Apple Fitness rings today!");
+    alert("📊 Activity Details & Goals Breakdown:\n\n• Move: 420/500 cal burned (84%)\n• Exercise: 35/45 mins active (77%)\n• Stand: 10/12 hours with posture breaks (83%)\n\nKeep moving to close all your daily fitness rings!");
 }

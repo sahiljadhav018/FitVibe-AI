@@ -549,7 +549,7 @@ async function toggleCamera() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
         releaseWakeLock();
-        speak("Session paused. Outstanding effort!");
+        speak("Session paused. Good workout!");
         return;
     }
 
@@ -654,7 +654,7 @@ function simulateRep() {
     if (calEl) calEl.innerText = caloriesBurned;
     if (accEl) accEl.innerText = currentAccuracy;
 
-    updateHUD(84, "REP COMPLETE", `Rep ${repCount} Complete! Outstanding!`, true);
+    updateHUD(84, "REP COMPLETE", `Rep ${repCount} Complete! Good form!`, true);
     triggerHaptic();
     triggerCombatEffects();
     speak(`Rep ${repCount} complete!`);
@@ -682,7 +682,7 @@ async function saveCurrentWorkout() {
                 accuracy: currentAccuracy,
                 calories: currentCals,
                 duration_sec: duration,
-                feedback: `Tracked with 3D AI Vision. Average Form Accuracy: ${currentAccuracy}%`
+                feedback: `Form Accuracy: ${currentAccuracy}%`
             })
         });
 
@@ -719,7 +719,7 @@ async function saveCurrentWorkout() {
             accuracy: currentAccuracy,
             calories: currentCals,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            feedback: "Tracked with 3D AI Vision (Mobile Synced)"
+            feedback: "Completed Workout (Mobile Synced)"
         });
         localStorage.setItem('fitvibe_workouts', JSON.stringify(localWorkouts.slice(0, 20)));
 

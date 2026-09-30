@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>FitVibe AI | 3D Dangal Wrestling & Campus Fitness</title>
 
-    <link rel="manifest" href="./manifest.json">
+    <link rel="manifest" href="/static/manifest.json">
     <link rel="icon" href="https://img.icons8.com/color/96/strength.png" type="image/png">
 
     <!-- Fonts -->
@@ -163,17 +163,17 @@
     <!-- Top Live Banner with Global Public Link -->
     <div class="bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 text-white text-xs py-1.5 px-4 font-bold flex items-center justify-between shadow-lg">
         <div class="flex items-center space-x-2 truncate">
-            <span class="animate-bounce text-sm">ðŸ¤¼</span>
+            <span class="animate-bounce text-sm">🤼</span>
             <span class="font-wrestling uppercase tracking-wider text-[11px]">3D Dangal Wrestling & Fitness Arena Active</span>
             <span class="hidden sm:inline bg-black/30 px-2 py-0.5 rounded text-[10px]">AICTE SIH-26196</span>
         </div>
         <div class="flex items-center space-x-2">
             <a href="https://infinite-massive-andale-stainless.trycloudflare.com" target="_blank" class="bg-black/40 hover:bg-black/60 px-2.5 py-0.5 rounded-full text-[10px] font-mono flex items-center space-x-1 transition text-amber-200 border border-amber-400/30">
-                <span>ðŸŒ Public Mobile Link</span>
+                <span>🌐 Public Mobile Link</span>
                 <i data-lucide="external-link" class="w-3 h-3"></i>
             </a>
             <button onclick="openQrModal()" class="bg-white/20 hover:bg-white/30 px-2.5 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider">
-                ðŸ“± QR
+                📱 QR
             </button>
         </div>
     </div>
@@ -184,7 +184,7 @@
             <!-- Brand -->
             <div class="flex items-center space-x-2.5">
                 <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 via-orange-600 to-red-600 flex items-center justify-center font-bold text-white shadow-lg shadow-orange-500/30">
-                    âš¡
+                    ⚡
                 </div>
                 <div>
                     <div class="flex items-center space-x-2">
@@ -199,7 +199,7 @@
             <div class="flex items-center space-x-2">
                 <!-- Gong Sound Test -->
                 <button onclick="playGongSound()" class="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-bold flex items-center space-x-1.5 transition shadow-sm" title="Ring Arena Gong">
-                    <span>ðŸ””</span>
+                    <span>🔔</span>
                     <span class="hidden sm:inline">Arena Gong</span>
                 </button>
 
@@ -207,7 +207,7 @@
                 <div class="flex items-center space-x-2 bg-slate-800/80 border border-amber-500/30 rounded-xl px-3 py-1.5">
                     <span class="text-xs font-bold text-white" id="header_user_name">Sahil (You)</span>
                     <span class="text-xs text-amber-400 font-extrabold px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 font-wrestling" id="header_wrestler_tier">
-                        Malla ðŸ¦¾
+                        Malla 🦾
                     </span>
                     <span class="text-xs text-orange-400 font-black hidden sm:inline" id="header_user_xp">
                         2,273 XP
@@ -251,19 +251,19 @@
                 <!-- Select Exercise Pills (English) -->
                 <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
                     <button onclick="selectExercise('Baithak')" id="ex_Baithak" class="ex-pill px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-black shadow-md shadow-amber-500/30 whitespace-nowrap transition flex items-center space-x-1">
-                        <span>ðŸ¤¼</span>
+                        <span>🤼</span>
                         <span>Desi Baithak (Hindu Squats)</span>
                     </button>
                     <button onclick="selectExercise('Dand')" id="ex_Dand" class="ex-pill px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/80 text-slate-300 hover:text-white whitespace-nowrap transition flex items-center space-x-1">
-                        <span>ðŸ¦¾</span>
+                        <span>🦾</span>
                         <span>Desi Dand (Hindu Push-ups)</span>
                     </button>
                     <button onclick="selectExercise('SuryaNamaskar')" id="ex_SuryaNamaskar" class="ex-pill px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/80 text-slate-300 hover:text-white whitespace-nowrap transition flex items-center space-x-1">
-                        <span>ðŸ§˜</span>
+                        <span>🧘</span>
                         <span>Surya Namaskar Flow</span>
                     </button>
                     <button onclick="selectExercise('Bridge')" id="ex_Bridge" class="ex-pill px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/80 text-slate-300 hover:text-white whitespace-nowrap transition flex items-center space-x-1">
-                        <span>ðŸ›¡ï¸</span>
+                        <span>🛡️</span>
                         <span>Wrestler Neck Bridge</span>
                     </button>
                 </div>
@@ -277,7 +277,7 @@
                         <i data-lucide="refresh-cw" class="w-4 h-4 text-orange-400"></i>
                     </button>
                     <button id="btn_sim_rep" onclick="simulateRep()" class="px-3.5 py-1.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-xs font-bold rounded-xl transition flex items-center space-x-1 shadow-md btn-3d">
-                        <span>ðŸ’¥</span>
+                        <span>💥</span>
                         <span>Simulate 1 Rep</span>
                     </button>
                 </div>
@@ -297,15 +297,15 @@
                         <!-- Standby State Placeholder -->
                         <div id="camera_placeholder" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-[#070A10]">
                             <div class="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-3 shadow-lg shadow-amber-500/10">
-                                <span class="text-3xl">ðŸ¤¼</span>
+                                <span class="text-3xl">🤼</span>
                             </div>
-                            <h3 class="text-base font-bold text-white mb-1 font-wrestling uppercase tracking-wider text-amber-400">3D AI Camera Ready</h3>
-                            <p class="text-xs text-slate-400 max-w-sm mb-3">Position your phone or webcam so your full body is visible. Real-time 3D landmark mesh calculates depth and joint angles with 100% device privacy.</p>
+                            <h3 class="text-base font-bold text-white mb-1 font-wrestling uppercase tracking-wider text-amber-400">Camera Setup Ready</h3>
+                            <p class="text-xs text-slate-400 max-w-sm mb-3">Make sure your phone is placed steadily and your full body is visible in the frame. Posture tracking runs locally in your browser.</p>
                             <button onclick="toggleCamera()" class="px-6 py-2.5 bg-gradient-to-r from-amber-500 via-orange-600 to-red-600 hover:from-amber-400 hover:to-red-500 text-white font-black text-sm rounded-xl shadow-lg shadow-orange-500/30 transition flex items-center space-x-2 btn-3d">
                                 <i data-lucide="swords" class="w-4 h-4"></i>
                                 <span>Start 3D Camera Coach</span>
                             </button>
-                            <span class="text-[11px] text-slate-400 mt-3 block">ðŸ“± Mobile: Tap <b>Allow</b> when browser prompts for camera permission.</span>
+                            <span class="text-[11px] text-slate-400 mt-3 block">📱 Mobile: Tap <b>Allow</b> when browser prompts for camera permission.</span>
                         </div>
 
                         <!-- Top In-Camera HUD -->
@@ -322,7 +322,7 @@
                         <!-- Bottom Joint Angle Bar -->
                         <div id="camera_bottom_bar" class="absolute bottom-3 left-3 right-3 bg-black/75 backdrop-blur-md p-2.5 rounded-xl border border-amber-500/30 pointer-events-none hidden">
                             <div class="flex items-center justify-between text-xs font-semibold mb-1">
-                                <span class="text-slate-300">3D Joint Angle: <span id="hud_angle_val" class="text-amber-400 font-bold">175Â°</span></span>
+                                <span class="text-slate-300">3D Joint Angle: <span id="hud_angle_val" class="text-amber-400 font-bold">175°</span></span>
                                 <span id="hud_stage_val" class="text-orange-400 font-bold uppercase font-wrestling">STAGE: UP</span>
                             </div>
                             <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
@@ -334,9 +334,9 @@
                     <!-- Voice Commentary Strip -->
                     <div class="card-3d p-3 rounded-2xl flex items-center justify-between">
                         <div class="flex items-center space-x-2.5 overflow-hidden">
-                            <span class="text-xl">ðŸŽ™ï¸</span>
+                            <span class="text-xl">🎙️</span>
                             <div class="truncate">
-                                <span class="text-[10px] text-amber-400 font-extrabold uppercase block font-wrestling">AI Arena Commentary</span>
+                                <span class="text-[10px] text-amber-400 font-extrabold uppercase block font-wrestling">Voice Coach</span>
                                 <span id="coach_voice_text" class="text-xs font-bold text-white truncate block">"Step into camera view and power through each rep!"</span>
                             </div>
                         </div>
@@ -408,15 +408,15 @@
                         </h4>
                         <div class="space-y-1.5 text-xs">
                             <div id="check_visibility" class="flex items-center space-x-2 text-slate-400">
-                                <span class="w-4 h-4 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">âšª</span>
+                                <span class="w-4 h-4 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">⚪</span>
                                 <span>Full Body Landmark Depth</span>
                             </div>
                             <div id="check_depth" class="flex items-center space-x-2 text-slate-400">
-                                <span class="w-4 h-4 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">âšª</span>
-                                <span>Deep Squat Flexion (&lt; 95Â°)</span>
+                                <span class="w-4 h-4 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">⚪</span>
+                                <span>Deep Squat Flexion (&lt; 95°)</span>
                             </div>
                             <div id="check_back" class="flex items-center space-x-2 text-slate-400">
-                                <span class="w-4 h-4 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">âšª</span>
+                                <span class="w-4 h-4 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">⚪</span>
                                 <span>Upright Torso & Neutral Spine</span>
                             </div>
                         </div>
@@ -439,7 +439,7 @@
             <div class="card-3d p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div>
                     <h2 class="text-lg font-bold text-white flex items-center space-x-2">
-                        <span>ðŸ† Campus & Hostel Arena Rankings</span>
+                        <span>🏆 Campus & Hostel Arena Rankings</span>
                         <span class="text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold font-wrestling">Week 14 League</span>
                     </h2>
                     <p class="text-xs text-slate-400">Real-time student rankings across colleges, hostels, and departments.</p>
@@ -455,7 +455,7 @@
                 <!-- 2nd Place -->
                 <div class="card-3d p-3 rounded-2xl text-center flex flex-col justify-between">
                     <div>
-                        <span class="text-2xl">ðŸ¥ˆ</span>
+                        <span class="text-2xl">🥈</span>
                         <span class="text-[10px] font-bold text-slate-400 uppercase block font-wrestling">Runner Up #2</span>
                         <h4 class="font-bold text-white text-xs sm:text-sm mt-0.5 truncate">Aarav Sharma</h4>
                         <span class="text-[10px] text-slate-400 block truncate">Hostel A</span>
@@ -466,18 +466,18 @@
                 <!-- 1st Place (Sahil) -->
                 <div class="card-3d p-3.5 rounded-2xl text-center border-amber-500/60 bg-gradient-to-b from-amber-500/20 to-slate-900/60 flex flex-col justify-between shadow-lg shadow-amber-500/20">
                     <div>
-                        <span class="text-3xl">ðŸ¥‡</span>
+                        <span class="text-3xl">🥇</span>
                         <span class="text-[10px] font-black text-amber-400 uppercase block font-wrestling">Champion #1 (You)</span>
                         <h4 class="font-extrabold text-white text-xs sm:text-base mt-0.5 truncate">Sahil</h4>
                         <span class="text-[10px] text-slate-300 block truncate">Hostel B</span>
                     </div>
-                    <div id="podium_user_xp" class="mt-2 text-xs font-black text-amber-300">2,273 XP ðŸ”¥</div>
+                    <div id="podium_user_xp" class="mt-2 text-xs font-black text-amber-300">2,273 XP 🔥</div>
                 </div>
 
                 <!-- 3rd Place -->
                 <div class="card-3d p-3 rounded-2xl text-center border-orange-500/40 flex flex-col justify-between">
                     <div>
-                        <span class="text-2xl">ðŸ¥‰</span>
+                        <span class="text-2xl">🥉</span>
                         <span class="text-[10px] font-bold text-orange-400 uppercase block font-wrestling">Bronze #3</span>
                         <h4 class="font-bold text-white text-xs sm:text-sm mt-0.5 truncate">Pooja Kulkarni</h4>
                         <span class="text-[10px] text-slate-400 block truncate">Hostel C</span>
@@ -505,7 +505,7 @@
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-3">
                     <div>
                         <h2 class="text-lg font-bold text-white flex items-center space-x-2">
-                            <span>ðŸ¥— Warrior Diet & Canteen Nutrition</span>
+                            <span>🥗 Warrior Diet & Canteen Nutrition</span>
                             <span class="text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold font-wrestling">Strength & Stamina</span>
                         </h2>
                         <p class="text-xs text-slate-400">Optimize protein and calories from college canteen and mess food on a student budget.</p>
@@ -551,7 +551,7 @@
                 <div class="lg:col-span-4 card-3d p-4 rounded-2xl flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between pb-2 border-b border-white/[0.06] mb-3">
-                            <span class="text-xs font-bold text-white font-wrestling">ðŸ½ï¸ Current Plate (Thali)</span>
+                            <span class="text-xs font-bold text-white font-wrestling">🍽️ Current Plate (Thali)</span>
                             <button onclick="clearPlate()" class="text-[11px] text-red-400 hover:underline">Clear</button>
                         </div>
                         <div id="plate_items_list" class="space-y-1.5 text-xs max-h-56 overflow-y-auto">
@@ -560,7 +560,7 @@
                     </div>
 
                     <div class="mt-4 pt-3 border-t border-white/[0.06] bg-slate-900/40 p-2.5 rounded-xl">
-                        <span class="text-[10px] font-bold text-amber-400 block mb-0.5">ðŸ’¡ Student Nutrition Insight:</span>
+                        <span class="text-[10px] font-bold text-amber-400 block mb-0.5">💡 Student Nutrition Insight:</span>
                         <p id="diet_tip_text" class="text-[11px] text-slate-300">Add 1 bowl of Boiled Moong Sprouts or 2 Boiled Eggs to achieve 25g+ protein for muscle recovery on a budget.</p>
                     </div>
                 </div>
@@ -587,7 +587,7 @@
                                         Today's Progress
                                     </h3>
                                     <p class="text-xs text-zinc-400">
-                                        Apple Fitness Activity & Campus Goals
+                                        Daily Movement & Campus Goals
                                     </p>
                                 </div>
                             </div>
@@ -718,7 +718,7 @@
                             <span class="text-[10px] font-bold uppercase text-amber-400 block mb-1 font-wrestling">Active Training Streak</span>
                             <div class="flex items-baseline space-x-2">
                                 <span id="habit_streak_val" class="font-display text-4xl font-black text-white">7</span>
-                                <span class="text-amber-400 text-xs font-bold">Days Active ðŸ”¥</span>
+                                <span class="text-amber-400 text-xs font-bold">Days Active 🔥</span>
                             </div>
                             <p class="text-xs text-slate-400 mt-1">Reach 10 days to unlock the 'Arena Titan' badge.</p>
                         </div>
@@ -733,8 +733,8 @@
             <!-- Workout History -->
             <div class="card-3d rounded-2xl overflow-hidden">
                 <div class="p-3 border-b border-white/[0.06] flex items-center justify-between">
-                    <span class="text-xs font-bold text-white uppercase tracking-wider font-wrestling">Recent AI Training Sessions</span>
-                    <span class="text-[11px] text-slate-400">Stored in SQLite</span>
+                    <span class="text-xs font-bold text-white uppercase tracking-wider font-wrestling">Recent Training Sessions</span>
+                    <span class="text-[11px] text-slate-400">Activity History</span>
                 </div>
                 <div id="history_list" class="divide-y divide-white/[0.06]"></div>
             </div>
@@ -745,19 +745,19 @@
     <!-- Mobile Bottom Navigation Bar (English) -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#070A10]/95 backdrop-blur-xl border-t border-amber-500/20 px-2 py-2 flex items-center justify-around pb-safe">
         <button onclick="switchTab('coach')" id="mob_tab_coach" class="mob-tab flex flex-col items-center text-amber-400 font-bold transition">
-            <span class="text-lg">ðŸ¤¼</span>
+            <span class="text-lg">🤼</span>
             <span class="text-[10px] mt-0.5 font-wrestling">Coach</span>
         </button>
         <button onclick="switchTab('leaderboard')" id="mob_tab_leaderboard" class="mob-tab flex flex-col items-center text-slate-400 font-medium transition">
-            <span class="text-lg">ðŸ†</span>
+            <span class="text-lg">🏆</span>
             <span class="text-[10px] mt-0.5">Rankings</span>
         </button>
         <button onclick="switchTab('nutrition')" id="mob_tab_nutrition" class="mob-tab flex flex-col items-center text-slate-400 font-medium transition">
-            <span class="text-lg">ðŸ¥—</span>
+            <span class="text-lg">🥗</span>
             <span class="text-[10px] mt-0.5">Diet</span>
         </button>
         <button onclick="switchTab('habits')" id="mob_tab_habits" class="mob-tab flex flex-col items-center text-slate-400 font-medium transition">
-            <span class="text-lg">âš¡</span>
+            <span class="text-lg">⚡</span>
             <span class="text-[10px] mt-0.5">Habits</span>
         </button>
     </nav>
@@ -767,9 +767,9 @@
         <div class="card-3d max-w-sm w-full p-5 rounded-3xl border border-amber-500/40 shadow-2xl space-y-4 text-center">
             <div class="flex items-center justify-between pb-2 border-b border-white/[0.06]">
                 <h3 class="font-bold text-white text-sm flex items-center space-x-1.5 font-wrestling">
-                    <span>ðŸ“± Open on Any Mobile Device</span>
+                    <span>📱 Open on Any Mobile Device</span>
                 </h3>
-                <button onclick="closeQrModal()" class="text-slate-400 hover:text-white font-bold text-sm">âœ•</button>
+                <button onclick="closeQrModal()" class="text-slate-400 hover:text-white font-bold text-sm">✕</button>
             </div>
 
             <!-- QR Code -->
@@ -786,8 +786,8 @@
             </div>
 
             <div class="text-[11px] text-slate-300 text-left bg-slate-800/60 p-2.5 rounded-xl border border-amber-500/20 space-y-1">
-                <p>âœ… <b>Global Public Access:</b> Works on 4G, 5G, or any Wi-Fi worldwide.</p>
-                <p>ðŸ”’ <b>Trusted Cloudflare SSL:</b> Camera permissions unlock immediately.</p>
+                <p>✅ <b>Global Public Access:</b> Works on 4G, 5G, or any Wi-Fi worldwide.</p>
+                <p>🔒 <b>Trusted Cloudflare SSL:</b> Camera permissions unlock immediately.</p>
             </div>
 
             <button onclick="closeQrModal()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl transition">
@@ -797,8 +797,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="./js/pose_coach.js"></script>
-    <script src="./js/app.js"></script>
+    <script src="/static/js/pose_coach.js"></script>
+    <script src="/static/js/app.js"></script>
 </body>
 </html>
-
