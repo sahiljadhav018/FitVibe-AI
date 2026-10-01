@@ -12,10 +12,16 @@ let mobileUrl = "https://infinite-massive-andale-stainless.trycloudflare.com";
 // Three.js 3D Visualizer variables
 let scene, camera3D, renderer, trophyMesh;
 let isDragging3D = false;
-let previousMousePosition = { x: 0, y: 0 };
+// 3D Moving Earth Cosmic Background variables
+let earthScene, earthCamera, earthRenderer;
+let earthGroup, earthMesh, cloudsMesh, starField;
+let orbitSatellites = [];
+let earthMouseX = 0, earthMouseY = 0;
+let earthTargetRotX = 0, earthTargetRotY = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
+    init3DEarthBackground();
     init3DTrophy();
     initCard3DTilt();
     fetchNetworkInfo();
@@ -29,7 +35,288 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==============================================================
-// 1. Three.js Interactive 3D Championship Trophy / Mace Model
+// 1. Three.js 3D Moving Earth Cosmic Background (Realistic WebGL Globe)
+// ==============================================================
+function createProceduralEarthTexture() {
+    const c = document.createElement('canvas');
+    c.width = 1024;
+    c.height = 512;
+    const ctx = c.getContext('2d');
+
+    const oceanGrad = ctx.createLinearGradient(0, 0, 0, 512);
+    oceanGrad.addColorStop(0, '#0a1d3b');
+    oceanGrad.addColorStop(0.5, '#0f2b54');
+    oceanGrad.addColorStop(1, '#061326');
+    ctx.fillStyle = oceanGrad;
+    ctx.fillRect(0, 0, 1024, 512);
+
+    ctx.fillStyle = '#1e3a5f';
+    ctx.beginPath();
+    ctx.ellipse(260, 170, 120, 80, -0.2, 0, Math.PI * 2);
+    ctx.ellipse(320, 340, 70, 120, 0.3, 0, Math.PI * 2);
+    ctx.ellipse(620, 160, 170, 95, 0.1, 0, Math.PI * 2);
+    ctx.ellipse(580, 300, 90, 110, 0.1, 0, Math.PI * 2);
+    ctx.ellipse(710, 240, 60, 70, 0.4, 0, Math.PI * 2);
+    ctx.ellipse(840, 360, 65, 50, -0.1, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#2563eb';
+    ctx.beginPath();
+    ctx.ellipse(260, 170, 95, 60, -0.2, 0, Math.PI * 2);
+    ctx.ellipse(320, 340, 50, 90, 0.3, 0, Math.PI * 2);
+    ctx.ellipse(620, 160, 130, 75, 0.1, 0, Math.PI * 2);
+    ctx.ellipse(580, 300, 70, 85, 0.1, 0, Math.PI * 2);
+    ctx.ellipse(710, 240, 45, 55, 0.4, 0, Math.PI * 2);
+    ctx.fill();
+
+    return new THREE.CanvasTexture(c);
+}
+
+function init3DEarthBackground() {
+    const canvas = document.getElementById('earth_bg_canvas');
+    if (!canvas || typeof THREE === 'undefined') return;
+
+    earthScene = new THREE.Scene();
+
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    earthCamera = new THREE.PerspectiveCamera(42, w / h, 0.1, 1000);
+    earthCamera.position.set(0, 0.3, (w < 768) ? 9.8 : 8.0);
+
+    earthRenderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        alpha: true,
+        antialias: true,
+        powerPreference: "high-performance"
+    });
+    earthRenderer.setSize(w, h);
+    earthRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    earthRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+    earthRenderer.toneMappingExposure = 1.15;
+
+    // 1. Deep Space Starfield
+    const starCount = 1400;
+    const starGeo = new THREE.BufferGeometry();
+    const starPositions = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount; i++) {
+        const r = 90 + Math.random() * 200;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos((Math.random() * 2) - 1);
+        starPositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+        starPositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+        starPositions[i * 3 + 2] = r * Math.cos(phi);
+    }
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+    const starMat = new THREE.PointsMaterial({
+        size: 1.6,
+        color: 0x93c5fd,
+        transparent: true,
+        opacity: 0.85,
+        sizeAttenuation: true
+    });
+    starField = new THREE.Points(starGeo, starMat);
+    earthScene.add(starField);
+
+    // 2. Earth Group (Realistic 23.4° Axial Tilt)
+    earthGroup = new THREE.Group();
+    earthGroup.position.set(0, 0.35, 0);
+    earthGroup.rotation.z = 23.4 * (Math.PI / 180);
+    earthScene.add(earthGroup);
+
+    // 3. 3D Globe Mesh
+    const earthRadius = 2.45;
+    const sphereGeo = new THREE.SphereGeometry(earthRadius, 64, 64);
+    const textureLoader = new THREE.TextureLoader();
+
+    const fallbackTex = createProceduralEarthTexture();
+    const earthMat = new THREE.MeshPhongMaterial({
+        map: fallbackTex,
+        specular: new THREE.Color(0x38bdf8),
+        shininess: 24,
+        emissive: new THREE.Color(0x020817),
+        emissiveIntensity: 0.18
+    });
+
+    const localEarthUrl = window.location.pathname.includes('/netlify') || window.location.protocol === 'file:' ? './assets/earth_day.jpg' : '/static/assets/earth_day.jpg';
+    textureLoader.load(
+        localEarthUrl,
+        (tex) => {
+            earthMat.map = tex;
+            earthMat.needsUpdate = true;
+        },
+        undefined,
+        () => {
+            textureLoader.load(
+                'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/planets/earth_atmos_2048.jpg',
+                (cdnTex) => {
+                    earthMat.map = cdnTex;
+                    earthMat.needsUpdate = true;
+                }
+            );
+        }
+    );
+    textureLoader.load(
+        'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/planets/earth_specular_2048.jpg',
+        (specTex) => {
+            earthMat.specularMap = specTex;
+            earthMat.needsUpdate = true;
+        }
+    );
+
+    earthMesh = new THREE.Mesh(sphereGeo, earthMat);
+    earthGroup.add(earthMesh);
+
+    // 4. Atmospheric Swirling Clouds Layer
+    const cloudGeo = new THREE.SphereGeometry(earthRadius + 0.03, 64, 64);
+    const cloudMat = new THREE.MeshLambertMaterial({
+        transparent: true,
+        opacity: 0.42,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+    });
+    textureLoader.load(
+        'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/planets/earth_clouds_1024.png',
+        (cloudTex) => {
+            cloudMat.map = cloudTex;
+            cloudMat.needsUpdate = true;
+        }
+    );
+    cloudsMesh = new THREE.Mesh(cloudGeo, cloudMat);
+    earthGroup.add(cloudsMesh);
+
+    // 5. Glowing Atmospheric Rim (Fresnel Shader Halo)
+    const atmosGeo = new THREE.SphereGeometry(earthRadius + 0.16, 48, 48);
+    const atmosMat = new THREE.ShaderMaterial({
+        vertexShader: `
+            varying vec3 vNormal;
+            void main() {
+                vNormal = normalize(normalMatrix * normal);
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+        fragmentShader: `
+            varying vec3 vNormal;
+            void main() {
+                float intensity = pow(0.66 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.2);
+                gl_FragColor = vec4(0.24, 0.74, 1.0, 1.0) * intensity * 1.45;
+            }
+        `,
+        blending: THREE.AdditiveBlending,
+        side: THREE.BackSide,
+        transparent: true
+    });
+    const atmosMesh = new THREE.Mesh(atmosGeo, atmosMat);
+    earthGroup.add(atmosMesh);
+
+    // 6. Orbital Rings & Moving Satellites (Matches user's reference image)
+    const orbitConfigs = [
+        { radiusX: 3.5, radiusY: 3.2, tiltX: 1.1, tiltY: 0.3, tiltZ: 0.2, color: 0x38bdf8, speed: 0.25, satColor: 0xF59E0B },
+        { radiusX: 3.9, radiusY: 3.6, tiltX: -0.85, tiltY: -0.4, tiltZ: 0.5, color: 0x60a5fa, speed: -0.20, satColor: 0x38BDF8 },
+        { radiusX: 4.3, radiusY: 4.0, tiltX: 0.45, tiltY: 0.7, tiltZ: -0.3, color: 0xf59e0b, speed: 0.18, satColor: 0xF97316 }
+    ];
+
+    orbitConfigs.forEach((cfg, idx) => {
+        const curve = new THREE.EllipseCurve(0, 0, cfg.radiusX, cfg.radiusY, 0, 2 * Math.PI, false, 0);
+        const points = curve.getPoints(100);
+        const orbitPoints3D = points.map(p => new THREE.Vector3(p.x, p.y, 0));
+        const orbitGeo = new THREE.BufferGeometry().setFromPoints(orbitPoints3D);
+        const orbitMat = new THREE.LineBasicMaterial({
+            color: cfg.color,
+            transparent: true,
+            opacity: 0.32,
+            blending: THREE.AdditiveBlending
+        });
+        const orbitLine = new THREE.Line(orbitGeo, orbitMat);
+        orbitLine.rotation.set(cfg.tiltX, cfg.tiltY, cfg.tiltZ);
+        earthGroup.add(orbitLine);
+
+        // Satellite beacon
+        const satGeo = new THREE.SphereGeometry(0.075, 16, 16);
+        const satMat = new THREE.MeshBasicMaterial({ color: cfg.satColor });
+        const satMesh = new THREE.Mesh(satGeo, satMat);
+        const satLight = new THREE.PointLight(cfg.satColor, 1.8, 3.5);
+        satMesh.add(satLight);
+        orbitLine.add(satMesh);
+
+        orbitSatellites.push({
+            mesh: satMesh,
+            curve: curve,
+            speed: cfg.speed,
+            offset: idx * 0.33
+        });
+    });
+
+    // 7. Sunlight & Cosmic Lighting
+    const sunLight = new THREE.DirectionalLight(0xffffff, 1.9);
+    sunLight.position.set(6, 4, 5);
+    earthScene.add(sunLight);
+
+    const ambientLight = new THREE.AmbientLight(0x0c1a30, 0.75);
+    earthScene.add(ambientLight);
+
+    const rimLight = new THREE.DirectionalLight(0x38bdf8, 1.1);
+    rimLight.position.set(-6, -2, -4);
+    earthScene.add(rimLight);
+
+    // 8. Parallax Listeners
+    window.addEventListener('mousemove', (e) => {
+        earthMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        earthMouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+    });
+
+    window.addEventListener('touchmove', (e) => {
+        if (e.touches && e.touches[0]) {
+            earthMouseX = (e.touches[0].clientX / window.innerWidth - 0.5) * 2;
+            earthMouseY = (e.touches[0].clientY / window.innerHeight - 0.5) * 2;
+        }
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        earthCamera.aspect = width / height;
+        earthCamera.position.z = (width < 768) ? 9.8 : 8.0;
+        earthCamera.updateProjectionMatrix();
+        earthRenderer.setSize(width, height);
+    });
+
+    // 9. Animation Loop
+    let clock = new THREE.Clock();
+    function animateEarth() {
+        requestAnimationFrame(animateEarth);
+
+        const elapsedTime = clock.getElapsedTime();
+
+        // Slow majestic rotation
+        if (earthMesh) earthMesh.rotation.y += 0.0012;
+        if (cloudsMesh) cloudsMesh.rotation.y += 0.0018;
+        if (starField) starField.rotation.y += 0.00015;
+
+        // Move satellites along orbital paths
+        orbitSatellites.forEach(sat => {
+            const t = ((elapsedTime * sat.speed * 0.1) + sat.offset) % 1.0;
+            const normT = (t < 0) ? (1.0 + t) : t;
+            const point = sat.curve.getPoint(normT);
+            sat.mesh.position.set(point.x, point.y, 0);
+        });
+
+        // Interactive subtle parallax
+        earthTargetRotX += (earthMouseY * 0.14 - earthTargetRotX) * 0.035;
+        earthTargetRotY += (earthMouseX * 0.20 - earthTargetRotY) * 0.035;
+        if (earthGroup) {
+            earthGroup.rotation.x = earthTargetRotX;
+        }
+        earthCamera.position.x += (earthTargetRotY * 0.6 - earthCamera.position.x) * 0.035;
+        earthCamera.lookAt(0, 0.35, 0);
+
+        earthRenderer.render(earthScene, earthCamera);
+    }
+
+    animateEarth();
+}
+
+// ==============================================================
+// 2. Three.js Interactive 3D Championship Trophy / Mace Model
 // ==============================================================
 function init3DTrophy() {
     const container = document.getElementById('three_canvas_container');

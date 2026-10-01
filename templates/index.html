@@ -62,10 +62,21 @@
             touch-action: pan-y;
         }
         body {
-            background-color: #070A10;
+            background-color: transparent !important;
             color: #F8FAFC;
             -webkit-tap-highlight-color: transparent;
             min-height: 100vh;
+            position: relative;
+        }
+        #earth_bg_canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -10;
+            pointer-events: none;
+            background: radial-gradient(circle at 50% 25%, #08112a 0%, #030612 100%);
         }
         button, a {
             touch-action: manipulation;
@@ -73,11 +84,11 @@
 
         /* 3D Glassmorphism Cards */
         .card-3d {
-            background: linear-gradient(135deg, rgba(19, 28, 48, 0.85) 0%, rgba(13, 20, 36, 0.9) 100%);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(245, 158, 11, 0.2);
-            box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(255, 255, 255, 0.05);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.72) 0%, rgba(9, 14, 28, 0.82) 100%);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(245, 158, 11, 0.22);
+            box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.05);
             transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
             transform-style: preserve-3d;
             will-change: transform;
@@ -158,10 +169,13 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans pb-24 md:pb-6" id="app_body">
+<body class="min-h-screen flex flex-col font-sans pb-24 md:pb-6 relative" id="app_body">
+
+    <!-- 3D Moving Earth Cosmic Background Canvas -->
+    <canvas id="earth_bg_canvas" class="fixed inset-0 w-full h-full pointer-events-none -z-10"></canvas>
 
     <!-- Top Live Banner with Global Public Link -->
-    <div class="bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 text-white text-xs py-1.5 px-4 font-bold flex items-center justify-between shadow-lg">
+    <div class="bg-gradient-to-r from-amber-600/90 via-orange-600/90 to-red-600/90 backdrop-blur-md text-white text-xs py-1.5 px-4 font-bold flex items-center justify-between shadow-lg">
         <div class="flex items-center space-x-2 truncate">
             <span class="animate-bounce text-sm">🤼</span>
             <span class="font-wrestling uppercase tracking-wider text-[11px]">3D Dangal Wrestling & Fitness Arena Active</span>
@@ -179,7 +193,7 @@
     </div>
 
     <!-- Main Navigation Header -->
-    <header class="sticky top-0 z-40 bg-[#070A10]/95 backdrop-blur-md border-b border-white/[0.08]">
+    <header class="sticky top-0 z-40 bg-[#070A10]/75 backdrop-blur-xl border-b border-white/[0.08]">
         <div class="max-w-6xl mx-auto px-4 py-2.5 flex items-center justify-between">
             <!-- Brand -->
             <div class="flex items-center space-x-2.5">
@@ -218,7 +232,7 @@
     </header>
 
     <!-- Desktop Navigation Tabs (Full English) -->
-    <nav class="hidden md:block bg-[#0B101D] border-b border-white/[0.06]">
+    <nav class="hidden md:block bg-[#0B101D]/75 backdrop-blur-xl border-b border-white/[0.06]">
         <div class="max-w-6xl mx-auto px-4 flex space-x-2">
             <button onclick="switchTab('coach')" id="tab_coach" class="tab-btn py-3 px-4 font-semibold text-sm border-b-2 border-amber-500 text-amber-400 flex items-center space-x-2 transition">
                 <i data-lucide="swords" class="w-4 h-4 text-amber-400"></i>
@@ -743,7 +757,7 @@
     </main>
 
     <!-- Mobile Bottom Navigation Bar (English) -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#070A10]/95 backdrop-blur-xl border-t border-amber-500/20 px-2 py-2 flex items-center justify-around pb-safe">
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#070A10]/85 backdrop-blur-2xl border-t border-amber-500/20 px-2 py-2 flex items-center justify-around pb-safe">
         <button onclick="switchTab('coach')" id="mob_tab_coach" class="mob-tab flex flex-col items-center text-amber-400 font-bold transition">
             <span class="text-lg">🤼</span>
             <span class="text-[10px] mt-0.5 font-wrestling">Coach</span>
