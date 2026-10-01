@@ -1,4 +1,4 @@
-// ==============================================================
+﻿// ==============================================================
 // FitVibe AI - 3D Visualizer & Full English Client Controller
 // ==============================================================
 
@@ -7,7 +7,7 @@ let allFoodItems = [];
 let filteredFoodItems = [];
 let postureTimerInterval = null;
 let postureTimerSeconds = 25 * 60;
-let mobileUrl = "https://infinite-massive-andale-stainless.trycloudflare.com";
+let mobileUrl = "https://arkansas-bulk-linda-johnston.trycloudflare.com";
 
 // Three.js 3D Visualizer variables
 let scene, camera3D, renderer, trophyMesh;
@@ -117,7 +117,7 @@ function init3DEarthBackground() {
     starField = new THREE.Points(starGeo, starMat);
     earthScene.add(starField);
 
-    // 2. Earth Group (Realistic 23.4° Axial Tilt)
+    // 2. Earth Group (Realistic 23.4Â° Axial Tilt)
     earthGroup = new THREE.Group();
     earthGroup.position.set(0, 0.35, 0);
     earthGroup.rotation.z = 23.4 * (Math.PI / 180);
@@ -470,7 +470,7 @@ async function fetchNetworkInfo() {
         const res = await fetch('/api/network/info');
         const data = await res.json();
         if (data.status === 'success') {
-            mobileUrl = data.public_url || data.https_url || "https://infinite-massive-andale-stainless.trycloudflare.com";
+            mobileUrl = data.public_url || data.https_url || "https://arkansas-bulk-linda-johnston.trycloudflare.com";
             const qrImg = document.getElementById('qr_code_img');
             const qrUrlText = document.getElementById('qr_mobile_url');
             if (qrImg) qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(mobileUrl)}`;
@@ -546,26 +546,26 @@ async function fetchUserProfile() {
 
             if (nameEl) nameEl.innerText = u.name;
             if (rankEl) rankEl.innerText = u.rank;
-            if (podiumXp) podiumXp.innerText = `${u.xp.toLocaleString()} XP 🔥`;
+            if (podiumXp) podiumXp.innerText = `${u.xp.toLocaleString()} XP ðŸ”¥`;
             if (habitStreak) habitStreak.innerText = u.streak_days;
             if (headerXp) headerXp.innerText = `${u.xp.toLocaleString()} XP`;
 
             // English Pehelwan Wrestling Tier Badges
-            let tier = "Initiate 🌱";
+            let tier = "Initiate ðŸŒ±";
             let title = "Akhada Initiate";
             let nextTierText = "Next: Malla Warrior (+500 XP required)";
 
             if (u.xp >= 2500) {
-                tier = "Rustam-e-Hind 👑";
+                tier = "Rustam-e-Hind ðŸ‘‘";
                 title = "Rustam-e-Hind Titan";
                 nextTierText = "Supreme Arena Champion (Max Rank Reached!)";
             } else if (u.xp >= 1500) {
-                tier = "Kesari Contender 🏆";
+                tier = "Kesari Contender ðŸ†";
                 title = "Kesari Champion Contender";
                 const needed = 2500 - u.xp;
                 nextTierText = `Next: Rustam-e-Hind Titan (+${needed} XP)`;
             } else if (u.xp >= 700) {
-                tier = "Malla 🦾";
+                tier = "Malla ðŸ¦¾";
                 title = "Senior Malla Warrior";
                 const needed = 1500 - u.xp;
                 nextTierText = `Next: Kesari Contender (+${needed} XP)`;
@@ -601,22 +601,22 @@ async function fetchLeaderboard() {
                 row.className = `p-3.5 flex items-center justify-between transition ${isUser ? 'bg-amber-500/15 border-l-4 border-amber-500' : 'hover:bg-slate-800/40'}`;
 
                 let badge = `#${item.rank}`;
-                if (item.rank === 1) badge = "🥇";
-                else if (item.rank === 2) badge = "🥈";
-                else if (item.rank === 3) badge = "🥉";
+                if (item.rank === 1) badge = "ðŸ¥‡";
+                else if (item.rank === 2) badge = "ðŸ¥ˆ";
+                else if (item.rank === 3) badge = "ðŸ¥‰";
 
                 row.innerHTML = `
                     <div class="flex items-center space-x-3">
                         <span class="text-sm font-bold w-6 text-center ${item.rank <= 3 ? 'text-amber-400 font-extrabold' : 'text-slate-400'}">${badge}</span>
-                        <span class="text-lg">${item.avatar || '⚡'}</span>
+                        <span class="text-lg">${item.avatar || 'âš¡'}</span>
                         <div>
                             <span class="text-xs font-bold ${isUser ? 'text-amber-400' : 'text-white'}">${item.name}</span>
-                            <span class="text-[10px] text-slate-400 block">${item.branch} • ${item.hostel}</span>
+                            <span class="text-[10px] text-slate-400 block">${item.branch} â€¢ ${item.hostel}</span>
                         </div>
                     </div>
                     <div class="text-right">
                         <span class="text-xs font-black ${isUser ? 'text-amber-400' : 'text-slate-100'} block">${item.xp.toLocaleString()} XP</span>
-                        <span class="text-[10px] text-amber-300 font-semibold">🔥 ${item.streak_days}d streak</span>
+                        <span class="text-[10px] text-amber-300 font-semibold">ðŸ”¥ ${item.streak_days}d streak</span>
                     </div>
                 `;
                 container.appendChild(row);
@@ -726,9 +726,9 @@ function renderPlate() {
         row.innerHTML = `
             <div>
                 <span class="font-bold text-white">${item.name}</span>
-                <span class="text-[10px] text-slate-400 block">${item.qty}x • ${(item.calories * item.qty)} kcal</span>
+                <span class="text-[10px] text-slate-400 block">${item.qty}x â€¢ ${(item.calories * item.qty)} kcal</span>
             </div>
-            <button onclick="removeFromPlate('${item.id}')" class="text-red-400 hover:text-red-300 font-bold px-1.5 py-0.5">✕</button>
+            <button onclick="removeFromPlate('${item.id}')" class="text-red-400 hover:text-red-300 font-bold px-1.5 py-0.5">âœ•</button>
         `;
         container.appendChild(row);
     });
@@ -758,7 +758,7 @@ async function logCurrentMeal() {
         });
         const data = await res.json();
         if (data.status === 'success') {
-            alert(`✅ ${data.message}\nTotal Meal Calories: ${data.meal.calories} kcal | Protein: ${data.meal.protein}g`);
+            alert(`âœ… ${data.message}\nTotal Meal Calories: ${data.meal.calories} kcal | Protein: ${data.meal.protein}g`);
             currentPlate = [];
             renderPlate();
             fetchTodayNutrition();
@@ -844,7 +844,7 @@ function startPostureTimer() {
             clearInterval(postureTimerInterval);
             postureTimerInterval = null;
             if (typeof speak === 'function') speak("Time for a quick stretch and water break!", true);
-            alert("⏰ 25-Minute Study Block Done! Stand up, stretch and drink 1 glass of water.");
+            alert("â° 25-Minute Study Block Done! Stand up, stretch and drink 1 glass of water.");
             postureTimerSeconds = 25 * 60;
             txt.innerText = "Start 25m Focus Block";
         }
@@ -976,5 +976,6 @@ function handleAddGoalPrompt() {
 }
 
 function viewActivityDetails() {
-    alert("📊 Activity Details & Goals Breakdown:\n\n• Move: 420/500 cal burned (84%)\n• Exercise: 35/45 mins active (77%)\n• Stand: 10/12 hours with posture breaks (83%)\n\nKeep moving to close all your daily fitness rings!");
+    alert("ðŸ“Š Activity Details & Goals Breakdown:\n\nâ€¢ Move: 420/500 cal burned (84%)\nâ€¢ Exercise: 35/45 mins active (77%)\nâ€¢ Stand: 10/12 hours with posture breaks (83%)\n\nKeep moving to close all your daily fitness rings!");
 }
+
