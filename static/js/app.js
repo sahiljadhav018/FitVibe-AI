@@ -593,6 +593,7 @@ async function fetchLeaderboard() {
         const data = await res.json();
         if (data.status === 'success') {
             const container = document.getElementById('leaderboard_table_body');
+            if (!container) return;
             container.innerHTML = '';
 
             data.leaderboard.forEach(item => {
@@ -656,6 +657,7 @@ function filterFoodItems() {
 
 function renderFoodGrid() {
     const grid = document.getElementById('food_items_grid');
+    if (!grid) return;
     grid.innerHTML = '';
 
     filteredFoodItems.forEach(food => {
@@ -709,6 +711,7 @@ function clearPlate() {
 
 function renderPlate() {
     const container = document.getElementById('plate_items_list');
+    if (!container) return;
     if (currentPlate.length === 0) {
         container.innerHTML = `<p class="text-slate-500 py-6 text-center text-xs">Your plate is empty. Select food items on the left!</p>`;
         return;
@@ -982,12 +985,16 @@ function viewActivityDetails() {
 // ==============================================================
 // 11. PulseFit Workout Modal & Flow Controls
 // ==============================================================
-function openWorkoutModal() {
+function openWorkoutModal(title) {
     const modal = document.getElementById('workout_modal');
     if (modal) {
+        if (title) {
+            const titleEl = document.getElementById('modal_workout_title');
+            if (titleEl) titleEl.innerText = title;
+        }
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 }
 
