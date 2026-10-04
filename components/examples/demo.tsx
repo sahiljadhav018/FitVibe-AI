@@ -12,20 +12,20 @@ export default function PulseFitHeroDemo() {
         { label: "Anti-Dropout", onClick: () => console.log("Anti-Dropout") },
       ]}
       ctaButton={{
-        label: "Launch SIH Walkthrough",
-        onClick: () => console.log("Launch SIH Walkthrough"),
+        label: "Launch Interactive Tour",
+        onClick: () => console.log("Launch Interactive Tour"),
       }}
       title="Fitness inside Rahul's real day. Not another gym app."
       subtitle="We don't ask students to find 1 hour for the gym. FitVerse turns campus transit, lecture breaks, and dorm life into active vitality — 0% gym equipment required."
       primaryAction={{
-        label: "Start 60s Judge Demo",
-        onClick: () => console.log("Start 60s Judge Demo"),
+        label: "Explore Student Routine",
+        onClick: () => console.log("Explore Student Routine"),
       }}
       secondaryAction={{
         label: "Compare Smart Score",
         onClick: () => console.log("Compare Smart Score"),
       }}
-      disclaimer="*SIH 2026 Innovation PS #26196 • Zero wearable hardware required"
+      disclaimer="*100% on-device private processing • Zero wearable hardware required"
       socialProof={{
         avatars: [
           "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80",

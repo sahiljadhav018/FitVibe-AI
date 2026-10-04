@@ -1,5 +1,5 @@
 // ==============================================================
-// FitVibe AI AI - Core Interactive Engine for SIH 2026
+// FitVibe AI AI - Core Interactive Engine for Campus Edition
 // Built exclusively around the 7 Student Innovation Pillars
 // ==============================================================
 

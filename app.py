@@ -397,7 +397,7 @@ if __name__ == '__main__':
     use_ssl = os.path.exists(cert_path) and os.path.exists(key_path) and ('--no-ssl' not in sys.argv)
     
     print("=" * 60)
-    print("       FitVibe AI Server - SIH 2026 (PS-26196)")
+    print("       FitVibe AI Server - Campus Health & Movement Platform")
     print("=" * 60)
     if use_ssl:
         print(f" PC Local URL   : https://127.0.0.1:5050")
