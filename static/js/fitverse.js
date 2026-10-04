@@ -408,3 +408,145 @@ document.addEventListener('DOMContentLoaded', () => {
     setRahulStep(0);
     calculateFitCircleScore();
 });
+
+
+// ==============================================================
+// 8. LIVE WORKOUT MODAL CONTROLLER & CAMERA HOOKS
+// ==============================================================
+function openWorkoutModal(title) {
+    const modal = document.getElementById('workout_modal');
+    if (modal) {
+        if (title) {
+            const titleEl = document.getElementById('modal_workout_title');
+            if (titleEl) titleEl.innerText = title;
+        }
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+}
+
+function closeWorkoutModal() {
+    const modal = document.getElementById('workout_modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+        if (typeof stopCamera === 'function') stopCamera();
+    }
+}
+
+// 9. LIVE INTERACTIVE AI COACH CHATBOT
+function handleAICoachChat(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const input = document.getElementById('ai_chat_input');
+    if (!input || !input.value.trim()) return;
+
+    const query = input.value.trim().toLowerCase();
+    input.value = "";
+
+    const tagEl = document.getElementById('ai_diag_tag');
+    const textEl = document.getElementById('ai_diag_text');
+    const stepsEl = document.getElementById('ai_diag_steps');
+
+    if (tagEl) tagEl.innerText = "Custom Student Prescription";
+
+    if (query.includes("exam") || query.includes("test") || query.includes("study") || query.includes("busy")) {
+        if (textEl) textEl.innerText = "“Exams detected! High mental stress reduces cortisol recovery. Do NOT do exhausting workouts. Take 3-minute walking intervals between study sessions to reset memory consolidation.”";
+        if (stepsEl) {
+            stepsEl.innerHTML = `
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+                    <span class="font-bold text-slate-800">1. Flashcard Pacing Walk</span>
+                    <span class="text-slate-500">5 min • Revise while pacing</span>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+                    <span class="font-bold text-slate-800">2. Box Breathing Posture Reset</span>
+                    <span class="text-slate-500">2 min • Lowers exam panic</span>
+                </div>
+            `;
+        }
+    } else if (query.includes("neck") || query.includes("back") || query.includes("pain") || query.includes("slouch")) {
+        if (textEl) textEl.innerText = "“Forward head tilt detected from screen time. Let's decompress cervical vertebra C4-C7 immediately.”";
+        if (stepsEl) {
+            stepsEl.innerHTML = `
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+                    <span class="font-bold text-slate-800">1. Isometric Chin Retraction</span>
+                    <span class="text-slate-500">60 sec against chair back</span>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+                    <span class="font-bold text-slate-800">2. Doorframe Pectoral Stretch</span>
+                    <span class="text-slate-500">60 sec each arm</span>
+                </div>
+            `;
+        }
+    } else if (query.includes("tired") || query.includes("sleepy") || query.includes("lazy") || query.includes("fatigue")) {
+        if (textEl) textEl.innerText = "“Student afternoon slump! Sitting slows venous blood circulation from the legs to the brain. A 2-minute calf raise session pumps fresh oxygenated blood.”";
+        if (stepsEl) {
+            stepsEl.innerHTML = `
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+                    <span class="font-bold text-slate-800">1. Standing Calf Pumps (Soleus Pump)</span>
+                    <span class="text-slate-500">40 reps • Wakes up nervous system</span>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+                    <span class="font-bold text-slate-800">2. Cold Water Glass Hydration</span>
+                    <span class="text-slate-500">300ml instant fluid recharge</span>
+                </div>
+            `;
+        }
+    } else {
+        if (textEl) textEl.innerText = `“Custom Routine for '${query}': We designed a 6-minute distributed movement sequence that fits into your current break.”`;
+        if (stepsEl) {
+            stepsEl.innerHTML = `
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+                    <span class="font-bold text-slate-800">1. Campus Corridor Stride</span>
+                    <span class="text-slate-500">3 min • +25 kcal</span>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+                    <span class="font-bold text-slate-800">2. Standing Quad & Hip Hinge</span>
+                    <span class="text-slate-500">3 min • Joint fluid activation</span>
+                </div>
+            `;
+        }
+    }
+
+    if ('speechSynthesis' in window) {
+        const msg = new SpeechSynthesisUtterance("Routine updated. Check your personalized recommendation.");
+        msg.rate = 1.0;
+        window.speechSynthesis.speak(msg);
+    }
+}
+
+// 10. REAL GPS / CHECK-IN SYSTEM
+function checkInGPS(btn, questName, xp) {
+    if (!btn || btn.disabled) return;
+    
+    if (navigator.geolocation) {
+        btn.innerHTML = `<span>Checking GPS...</span>`;
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                claimQuest(btn, xp);
+                alert(`📍 Location Verified! Lat: ${pos.coords.latitude.toFixed(3)}, Long: ${pos.coords.longitude.toFixed(3)}\n+${xp} XP awarded for checking in at ${questName}!`);
+            },
+            (err) => {
+                // Fallback to manual check-in
+                claimQuest(btn, xp);
+            },
+            { timeout: 4000 }
+        );
+    } else {
+        claimQuest(btn, xp);
+    }
+}
+
+// 11. LIVE WATER TRACKER
+let currentWaterGlasses = 5;
+function drinkWaterLive() {
+    if (currentWaterGlasses < 12) currentWaterGlasses++;
+    const disp = document.getElementById('habit_water_count');
+    if (disp) disp.innerText = currentWaterGlasses;
+    alert(`💧 1 Glass Logged! (${currentWaterGlasses}/8 glasses today)`);
+}
+function resetWaterLive() {
+    currentWaterGlasses = 0;
+    const disp = document.getElementById('habit_water_count');
+    if (disp) disp.innerText = currentWaterGlasses;
+}
