@@ -3,68 +3,68 @@ import { PulseFitHero } from "@/components/ui/pulse-fit-hero";
 export default function PulseFitHeroDemo() {
   return (
     <PulseFitHero
-      logo="PulseFit"
+      logo="FitVerse AI"
       navigation={[
-        { label: "Features", onClick: () => console.log("Features") },
-        { label: "Programs", hasDropdown: true, onClick: () => console.log("Programs") },
-        { label: "Testimonials", onClick: () => console.log("Testimonials") },
-        { label: "Pricing", onClick: () => console.log("Pricing") },
-        { label: "Contact", onClick: () => console.log("Contact") },
+        { label: "Rahul's Day Demo", onClick: () => console.log("Rahul Demo") },
+        { label: "Smart Score AI", hasDropdown: true, onClick: () => console.log("Smart Score") },
+        { label: "MicroFit Engine", onClick: () => console.log("MicroFit") },
+        { label: "Campus Twin", onClick: () => console.log("Campus Twin") },
+        { label: "Anti-Dropout", onClick: () => console.log("Anti-Dropout") },
       ]}
       ctaButton={{
-        label: "Get Free Trial",
-        onClick: () => console.log("Get Free Trial"),
+        label: "Launch SIH Walkthrough",
+        onClick: () => console.log("Launch SIH Walkthrough"),
       }}
-      title="Train smarter. Anywhere. Anytime."
-      subtitle="Guided fitness sessions tailored to your goals - whether it's strength, endurance, or flexibility. Streamlined, motivating, and accessible 24/7."
+      title="Fitness inside Rahul's real day. Not another gym app."
+      subtitle="We don't ask students to find 1 hour for the gym. FitVerse turns campus transit, lecture breaks, and dorm life into active vitality — 0% gym equipment required."
       primaryAction={{
-        label: "Start training",
-        onClick: () => console.log("Start training"),
+        label: "Start 60s Judge Demo",
+        onClick: () => console.log("Start 60s Judge Demo"),
       }}
       secondaryAction={{
-        label: "Browse programs",
-        onClick: () => console.log("Browse programs"),
+        label: "Compare Smart Score",
+        onClick: () => console.log("Compare Smart Score"),
       }}
-      disclaimer="*No credit card required"
+      disclaimer="*SIH 2026 Innovation PS #26196 • Zero wearable hardware required"
       socialProof={{
         avatars: [
-          "https://cdn.21st.dev/assets/mirror/f0/f02fed36023656a5b5df6f247c83c96c53bfa9db5b98085cdee93ffc938a5f37.jpg",
-          "https://cdn.21st.dev/assets/mirror/5b/5b5b2f3487692d40f629010ea6448d150907f780d8c262c4ca194b7386115c2d.jpg",
-          "https://cdn.21st.dev/assets/mirror/10/10e2bfa5446e5c116e269b649b5f5e0106d96643f0a903048f3a056e40c35cd8.jpg",
-          "https://cdn.21st.dev/assets/mirror/fa/fae47bb0faba45d1e0696b6557ca36c551a738c7d6e3950e82bb69dd2f963a72.jpg",
+          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80",
         ],
-        text: "Join over 10,000+ people",
+        text: "Empowering 10,000+ sedentary college students",
       }}
       programs={[
         {
-          image: "https://cdn.21st.dev/assets/mirror/4b/4bce7fdac66e89582bda440c7addd609e0a9a02fb4c1d8fb9553c73d0b43ab41.jpg",
-          category: "BEGINNER",
-          title: "Jumping challenge",
-          onClick: () => console.log("Jumping challenge"),
+          image: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&auto=format&fit=crop&q=80",
+          category: "09:00 AM • TRANSIT",
+          title: "300m Campus Walk Challenge",
+          onClick: () => console.log("09:00 AM Transit"),
         },
         {
-          image: "https://cdn.21st.dev/assets/mirror/ca/cadcf059bfbef20421dbbf5dd6841fc51029a434f131f1076f88cfcbef8e49b0.jpg",
-          category: "INTERMEDIATE",
-          title: "Core stability flow",
-          onClick: () => console.log("Core stability flow"),
+          image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&auto=format&fit=crop&q=80",
+          category: "11:30 AM • POST-LECTURE",
+          title: "3-Min Desk Thoracic Reset",
+          onClick: () => console.log("11:30 AM Post-Lecture"),
         },
         {
-          image: "https://cdn.21st.dev/assets/mirror/9d/9db96f9491c478fad5f783a184c2e8681abe0c0e07c5c0d3c8104919a289e6f7.jpg",
-          category: "ADVANCED",
-          title: "Trail sprint challenge",
-          onClick: () => console.log("Trail sprint challenge"),
+          image: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800&auto=format&fit=crop&q=80",
+          category: "01:00 PM • CANTEEN RUSH",
+          title: "3-Flight Stair Mission",
+          onClick: () => console.log("01:00 PM Canteen"),
         },
         {
-          image: "https://cdn.21st.dev/assets/mirror/ae/ae2d78b3ff54a89f7fdcb8c5c1e9f3cc5e0be99570a816af8a7735e9228badff.jpg",
-          category: "ALL LEVELS",
-          title: "Full-body bootcamp",
-          onClick: () => console.log("Full-body bootcamp"),
+          image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&auto=format&fit=crop&q=80",
+          category: "04:30 PM • PEER SYNC",
+          title: "Anti-Dropout Walk Match",
+          onClick: () => console.log("04:30 PM Peer Sync"),
         },
         {
-          image: "https://cdn.21st.dev/assets/mirror/c8/c8c8636ca3521e0b5b883a68d7da589a54be66b739564c08c3a97c2d27fa1322.jpg",
-          category: "RECOVERY",
-          title: "Mobility & Recovery",
-          onClick: () => console.log("Mobility & Recovery"),
+          image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&auto=format&fit=crop&q=80",
+          category: "06:00 PM • WIND-DOWN",
+          title: "8-Min Dorm Room Calisthenics",
+          onClick: () => console.log("06:00 PM Dorm Burn"),
         },
       ]}
     />

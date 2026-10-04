@@ -1,0 +1,13 @@
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    X-Frame-Options = "ALLOWALL"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
