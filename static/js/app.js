@@ -599,25 +599,24 @@ async function fetchLeaderboard() {
             data.leaderboard.forEach(item => {
                 const isUser = item.is_current_user;
                 const row = document.createElement('div');
-                row.className = `p-3.5 flex items-center justify-between transition ${isUser ? 'bg-amber-500/15 border-l-4 border-amber-500' : 'hover:bg-slate-800/40'}`;
+                row.className = `py-3 px-2 flex items-center justify-between transition rounded-xl ${isUser ? 'bg-blue-50/80 font-semibold' : 'hover:bg-slate-50'}`;
 
                 let badge = `#${item.rank}`;
-                if (item.rank === 1) badge = "ðŸ¥‡";
-                else if (item.rank === 2) badge = "ðŸ¥ˆ";
-                else if (item.rank === 3) badge = "ðŸ¥‰";
+                if (item.rank === 1) badge = "🥇";
+                else if (item.rank === 2) badge = "🥈";
+                else if (item.rank === 3) badge = "🥉";
 
                 row.innerHTML = `
                     <div class="flex items-center space-x-3">
-                        <span class="text-sm font-bold w-6 text-center ${item.rank <= 3 ? 'text-amber-400 font-extrabold' : 'text-slate-400'}">${badge}</span>
-                        <span class="text-lg">${item.avatar || 'âš¡'}</span>
+                        <span class="text-xs font-bold w-6 text-center ${item.rank <= 3 ? 'text-amber-500' : 'text-slate-400'}">${badge}</span>
                         <div>
-                            <span class="text-xs font-bold ${isUser ? 'text-amber-400' : 'text-white'}">${item.name}</span>
-                            <span class="text-[10px] text-slate-400 block">${item.branch} â€¢ ${item.hostel}</span>
+                            <span class="text-xs font-semibold ${isUser ? 'text-blue-600' : 'text-slate-800'}">${item.name} ${isUser ? '(You)' : ''}</span>
+                            <span class="text-[10px] text-slate-400 block">${item.branch || 'Campus'} • ${item.hostel || 'Hostel'}</span>
                         </div>
                     </div>
                     <div class="text-right">
-                        <span class="text-xs font-black ${isUser ? 'text-amber-400' : 'text-slate-100'} block">${item.xp.toLocaleString()} XP</span>
-                        <span class="text-[10px] text-amber-300 font-semibold">ðŸ”¥ ${item.streak_days}d streak</span>
+                        <span class="text-xs font-bold text-slate-900 block">${item.xp.toLocaleString()} XP</span>
+                        <span class="text-[10px] text-amber-500 font-medium">🔥 ${item.streak_days}d streak</span>
                     </div>
                 `;
                 container.appendChild(row);
@@ -1051,6 +1050,109 @@ function copyMobileUrl() {
         prompt("Copy this URL:", url);
     }
 }
+
+// ==============================================================
+// 12. Program Filter, Macro Goals, BMI Calculator & Water
+// ==============================================================
+function filterWorkouts(category) {
+    const pills = ['all', 'strength', 'hiit', 'mobility'];
+    pills.forEach(p => {
+        const el = document.getElementById(`filter_${p}`);
+        if (!el) return;
+        if (p === category) {
+            el.className = "filter-pill px-4 py-2 rounded-full text-xs font-medium bg-[#1a1a1a] text-white transition";
+        } else {
+            el.className = "filter-pill px-4 py-2 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:text-black transition";
+        }
+    });
+
+    const items = document.querySelectorAll('.workout-item');
+    items.forEach(item => {
+        const cat = item.getAttribute('data-category');
+        if (category === 'all' || cat === category) {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+function setMacroGoal(goal) {
+    const goals = ['cut', 'maintain', 'bulk'];
+    goals.forEach(g => {
+        const btn = document.getElementById(`goal_${g}`);
+        if (!btn) return;
+        if (g === goal) {
+            btn.className = "px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#1a1a1a] text-white transition";
+        } else {
+            btn.className = "px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 transition";
+        }
+    });
+
+    const calEl = document.getElementById('macro_calories');
+    const protEl = document.getElementById('macro_protein');
+    const carbEl = document.getElementById('macro_carbs');
+    const fatEl = document.getElementById('macro_fats');
+
+    if (goal === 'cut') {
+        if (calEl) calEl.innerText = "1,850 kcal";
+        if (protEl) protEl.innerText = "155g";
+        if (carbEl) carbEl.innerText = "160g";
+        if (fatEl) fatEl.innerText = "45g";
+    } else if (goal === 'bulk') {
+        if (calEl) calEl.innerText = "2,600 kcal";
+        if (protEl) protEl.innerText = "165g";
+        if (carbEl) carbEl.innerText = "310g";
+        if (fatEl) fatEl.innerText = "65g";
+    } else {
+        if (calEl) calEl.innerText = "2,200 kcal";
+        if (protEl) protEl.innerText = "140g";
+        if (carbEl) carbEl.innerText = "220g";
+        if (fatEl) fatEl.innerText = "55g";
+    }
+}
+
+function calculateBMI() {
+    const hInput = document.getElementById('bmi_height');
+    const wInput = document.getElementById('bmi_weight');
+    const valEl = document.getElementById('bmi_value');
+    const catEl = document.getElementById('bmi_category');
+    const advEl = document.getElementById('bmi_advice');
+
+    if (!hInput || !wInput || !valEl) return;
+    const h = parseFloat(hInput.value);
+    const w = parseFloat(wInput.value);
+
+    if (!h || !w || h <= 0 || w <= 0) return;
+    const hM = h / 100;
+    const bmi = (w / (hM * hM)).toFixed(1);
+    valEl.innerText = bmi;
+
+    if (bmi < 18.5) {
+        catEl.innerText = "Underweight";
+        catEl.className = "px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700";
+        advEl.innerText = "Aim for caloric surplus to build lean mass.";
+    } else if (bmi <= 24.9) {
+        catEl.innerText = "Normal Weight";
+        catEl.className = "px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700";
+        advEl.innerText = "Healthy BMI range (18.5 - 24.9)";
+    } else if (bmi <= 29.9) {
+        catEl.innerText = "Overweight";
+        catEl.className = "px-3 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700";
+        advEl.innerText = "Incorporate daily cardio and moderate deficit.";
+    } else {
+        catEl.innerText = "Obese";
+        catEl.className = "px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700";
+        advEl.innerText = "Prioritize daily movement & nutrition consultation.";
+    }
+}
+
+function resetWater() {
+    const w = document.getElementById('habit_water_count');
+    if (w) w.innerText = '0';
+    if (typeof triggerHaptic === 'function') triggerHaptic();
+}
+
 
 
 

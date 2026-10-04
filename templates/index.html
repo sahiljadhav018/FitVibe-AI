@@ -11,7 +11,7 @@
     <!-- Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -21,6 +21,15 @@
                 extend: {
                     fontFamily: {
                         sans: ['"Inter"', 'sans-serif'],
+                    },
+                    colors: {
+                        pulse: {
+                            50: '#F5F9FF',
+                            100: '#E8F0FF',
+                            500: '#2563EB',
+                            600: '#1D4ED8',
+                            dark: '#1a1a1a'
+                        }
                     }
                 }
             }
@@ -40,9 +49,13 @@
             padding: 0;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(180deg, #E8F0FF 0%, #F5F9FF 50%, #FFFFFF 100%);
+            background: linear-gradient(180deg, #E8F0FF 0%, #F5F9FF 35%, #FFFFFF 100%);
             min-height: 100vh;
             color: #1a1a1a;
             overflow-x: hidden;
@@ -64,7 +77,7 @@
             align-items: center;
             gap: 24px;
             width: max-content;
-            animation: marquee 28s linear infinite;
+            animation: marquee 30s linear infinite;
         }
 
         .marquee-wrapper:hover {
@@ -88,6 +101,20 @@
             box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
         }
 
+        /* Modern Clean Cards */
+        .clean-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+        .clean-card:hover {
+            border-color: rgba(203, 213, 225, 1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+        }
+
         #webcam_video {
             width: 100%;
             height: 100%;
@@ -108,239 +135,653 @@
 </head>
 <body class="w-full min-h-screen flex flex-col justify-between">
 
-    <!-- Hero Section Container -->
-    <section class="relative w-full min-h-screen flex flex-col overflow-hidden justify-between">
-
-        <!-- Header -->
-        <header class="relative z-20 flex flex-row justify-between items-center px-8 lg:px-16 py-8">
+    <!-- ============================================== -->
+    <!-- NAVIGATION HEADER -->
+    <!-- ============================================== -->
+    <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200/60">
+        <div class="max-w-7xl mx-auto flex flex-row justify-between items-center px-6 lg:px-12 py-4">
             <!-- Logo -->
-            <div style="font-family: 'Inter', sans-serif; font-weight: 700; fontSize: 24px; color: #1a1a1a;">
-                PulseFit
-            </div>
+            <a href="/" class="flex items-center space-x-2">
+                <span class="font-bold text-2xl tracking-tight text-[#1a1a1a]">PulseFit</span>
+                <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+            </a>
 
-            <!-- Navigation -->
-            <nav class="hidden lg:flex flex-row items-center gap-8" aria-label="Main navigation">
-                <button class="flex flex-row items-center gap-1 hover:opacity-70 transition-opacity text-base font-normal text-[#4a5568]">
-                    Features
-                </button>
-                <button class="flex flex-row items-center gap-1 hover:opacity-70 transition-opacity text-base font-normal text-[#4a5568]">
-                    Programs
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-                <button class="flex flex-row items-center gap-1 hover:opacity-70 transition-opacity text-base font-normal text-[#4a5568]">
-                    Testimonials
-                </button>
-                <button class="flex flex-row items-center gap-1 hover:opacity-70 transition-opacity text-base font-normal text-[#4a5568]">
-                    Pricing
-                </button>
-                <button class="flex flex-row items-center gap-1 hover:opacity-70 transition-opacity text-base font-normal text-[#4a5568]">
-                    Contact
-                </button>
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex flex-row items-center gap-7 text-sm font-medium text-[#4a5568]" aria-label="Main navigation">
+                <a href="#programs" class="hover:text-[#1a1a1a] transition-colors">Programs</a>
+                <a href="#activity" class="hover:text-[#1a1a1a] transition-colors">Activity Rings</a>
+                <a href="#nutrition" class="hover:text-[#1a1a1a] transition-colors">Nutrition</a>
+                <a href="#health" class="hover:text-[#1a1a1a] transition-colors">BMI & Water</a>
+                <a href="#community" class="hover:text-[#1a1a1a] transition-colors">Community</a>
             </nav>
 
             <!-- CTA Button -->
-            <button onclick="openWorkoutModal('Full-body workout')" class="px-6 py-3 rounded-full transition-all hover:scale-105 bg-white border border-[#e2e8f0] text-base font-medium text-[#1a1a1a] shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
-                Get Free Trial
-            </button>
-        </header>
+            <div class="flex items-center space-x-3">
+                <button onclick="openWorkoutModal('Full-body workout')" class="px-5 py-2.5 rounded-full transition-all hover:scale-105 bg-white border border-[#e2e8f0] text-sm font-medium text-[#1a1a1a] shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
+                    Get Free Trial
+                </button>
+            </div>
+        </div>
+    </header>
 
-        <!-- Main Hero Center Content -->
-        <div class="relative z-10 flex-1 flex flex-col items-center justify-center px-4 py-8">
-            <div class="flex flex-col items-center text-center max-w-4xl" style="gap: 32px;">
-                
-                <!-- Title -->
-                <h1 style="font-family: 'Inter', sans-serif; font-weight: 700; font-size: clamp(36px, 6vw, 72px); line-height: 1.1; color: #1a1a1a; letter-spacing: -0.02em;">
-                    Train smarter.<br/>Anywhere. Anytime.
-                </h1>
+    <!-- ============================================== -->
+    <!-- HERO SECTION -->
+    <!-- ============================================== -->
+    <section class="relative w-full flex flex-col overflow-hidden items-center pt-14 pb-8">
+        <div class="relative z-10 flex flex-col items-center justify-center px-4 max-w-4xl text-center">
+            
+            <!-- Title -->
+            <h1 class="font-bold text-[#1a1a1a] mb-6 tracking-tight" style="font-size: clamp(38px, 6vw, 72px); line-height: 1.1; letter-spacing: -0.02em;">
+                Train smarter.<br/>Anywhere. Anytime.
+            </h1>
 
-                <!-- Subtitle -->
-                <p style="font-family: 'Inter', sans-serif; font-weight: 400; font-size: clamp(16px, 2vw, 20px); line-height: 1.6; color: #4a5568; max-width: 600px;">
-                    Guided fitness sessions tailored to your goals - whether it's strength, endurance, or flexibility. Streamlined, motivating, and accessible 24/7.
-                </p>
+            <!-- Subtitle -->
+            <p class="text-base sm:text-lg text-[#4a5568] max-w-2xl leading-relaxed mb-8 font-normal">
+                Guided fitness sessions tailored to your goals - whether it's strength, endurance, or flexibility. Streamlined, motivating, and accessible 24/7.
+            </p>
 
-                <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row items-center gap-4">
-                    <button onclick="openWorkoutModal('AI Live Coach')" class="flex flex-row items-center gap-2 px-8 py-4 rounded-full transition-all hover:scale-105 bg-[#1a1a1a] text-white text-lg font-medium shadow-[0_4px_16px_rgba(0,0,0,0.15)]">
-                        <span>Start training</span>
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <path d="M7 10H13M13 10L10 7M13 10L10 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row items-center gap-4 mb-3">
+                <button onclick="openWorkoutModal('AI Live Coach')" class="flex flex-row items-center gap-2 px-8 py-4 rounded-full transition-all hover:scale-105 bg-[#1a1a1a] text-white text-base sm:text-lg font-medium shadow-[0_4px_16px_rgba(0,0,0,0.15)]">
+                    <span>Start training</span>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M7 10H13M13 10L10 7M13 10L10 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
 
-                    <button onclick="document.getElementById('programs_carousel').scrollIntoView({behavior: 'smooth'})" class="px-8 py-4 rounded-full transition-all hover:scale-105 bg-transparent border border-[#cbd5e0] text-lg font-medium text-[#1a1a1a]">
-                        Browse programs
-                    </button>
+                <a href="#programs" class="px-8 py-4 rounded-full transition-all hover:scale-105 bg-white border border-[#cbd5e0] text-base sm:text-lg font-medium text-[#1a1a1a]">
+                    Browse programs
+                </a>
+            </div>
+
+            <!-- Disclaimer -->
+            <p class="text-xs text-[#718096] italic mb-8">
+                *No credit card required
+            </p>
+
+            <!-- Social Proof -->
+            <div class="flex flex-row items-center gap-3">
+                <div class="flex flex-row -space-x-2">
+                    <img src="https://cdn.21st.dev/assets/mirror/f0/f02fed36023656a5b5df6f247c83c96c53bfa9db5b98085cdee93ffc938a5f37.jpg" alt="User 1" class="rounded-full border-2 border-white w-10 h-10 object-cover">
+                    <img src="https://cdn.21st.dev/assets/mirror/5b/5b5b2f3487692d40f629010ea6448d150907f780d8c262c4ca194b7386115c2d.jpg" alt="User 2" class="rounded-full border-2 border-white w-10 h-10 object-cover">
+                    <img src="https://cdn.21st.dev/assets/mirror/10/10e2bfa5446e5c116e269b649b5f5e0106d96643f0a903048f3a056e40c35cd8.jpg" alt="User 3" class="rounded-full border-2 border-white w-10 h-10 object-cover">
+                    <img src="https://cdn.21st.dev/assets/mirror/fa/fae47bb0faba45d1e0696b6557ca36c551a738c7d6e3950e82bb69dd2f963a72.jpg" alt="User 4" class="rounded-full border-2 border-white w-10 h-10 object-cover">
                 </div>
-
-                <!-- Disclaimer -->
-                <p style="font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 400; color: #718096; font-style: italic;">
-                    *No credit card required
-                </p>
-
-                <!-- Social Proof -->
-                <div class="flex flex-row items-center gap-3">
-                    <div class="flex flex-row -space-x-2">
-                        <img src="https://cdn.21st.dev/assets/mirror/f0/f02fed36023656a5b5df6f247c83c96c53bfa9db5b98085cdee93ffc938a5f37.jpg" alt="User 1" class="rounded-full border-2 border-white w-10 h-10 object-cover">
-                        <img src="https://cdn.21st.dev/assets/mirror/5b/5b5b2f3487692d40f629010ea6448d150907f780d8c262c4ca194b7386115c2d.jpg" alt="User 2" class="rounded-full border-2 border-white w-10 h-10 object-cover">
-                        <img src="https://cdn.21st.dev/assets/mirror/10/10e2bfa5446e5c116e269b649b5f5e0106d96643f0a903048f3a056e40c35cd8.jpg" alt="User 3" class="rounded-full border-2 border-white w-10 h-10 object-cover">
-                        <img src="https://cdn.21st.dev/assets/mirror/fa/fae47bb0faba45d1e0696b6557ca36c551a738c7d6e3950e82bb69dd2f963a72.jpg" alt="User 4" class="rounded-full border-2 border-white w-10 h-10 object-cover">
-                    </div>
-                    <span style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: #4a5568;">
-                        Join over 10,000+ people
-                    </span>
-                </div>
-
+                <span class="text-sm font-medium text-[#4a5568]">
+                    Join over 10,000+ people
+                </span>
             </div>
         </div>
 
-        <!-- Program Cards Carousel -->
-        <div id="programs_carousel" class="relative z-10 w-full overflow-hidden py-14">
-            <!-- Left Gradient Overlay -->
-            <div class="absolute left-0 top-0 bottom-0 z-10 pointer-events-none w-36 sm:w-48 bg-gradient-to-r from-white to-transparent"></div>
-            <!-- Right Gradient Overlay -->
-            <div class="absolute right-0 top-0 bottom-0 z-10 pointer-events-none w-36 sm:w-48 bg-gradient-to-l from-white to-transparent"></div>
+        <!-- Infinite Program Cards Carousel -->
+        <div class="relative z-10 w-full overflow-hidden pt-12 pb-6">
+            <div class="absolute left-0 top-0 bottom-0 z-10 pointer-events-none w-36 sm:w-48 bg-gradient-to-r from-[#F5F9FF] to-transparent"></div>
+            <div class="absolute right-0 top-0 bottom-0 z-10 pointer-events-none w-36 sm:w-48 bg-gradient-to-l from-[#F5F9FF] to-transparent"></div>
 
-            <!-- Scrolling Marquee Track -->
             <div class="marquee-wrapper px-6">
                 <!-- Program Cards Set 1 -->
                 <div onclick="launchWorkout('Jumping challenge')" class="program-card">
                     <img src="https://cdn.21st.dev/assets/mirror/4b/4bce7fdac66e89582bda440c7addd609e0a9a02fb4c1d8fb9553c73d0b43ab41.jpg" alt="Jumping challenge" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-6 flex flex-col gap-2">
-                        <span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: rgba(255, 255, 255, 0.8); text-transform: uppercase; letter-spacing: 0.1em;">
-                            BEGINNER
-                        </span>
-                        <h3 style="font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 600; color: #FFFFFF; line-height: 1.3;">
-                            Jumping challenge
-                        </h3>
+                        <span class="text-xs font-medium text-white/80 uppercase tracking-widest">BEGINNER</span>
+                        <h3 class="text-2xl font-semibold text-white">Jumping challenge</h3>
                     </div>
                 </div>
 
                 <div onclick="launchWorkout('Core stability flow')" class="program-card">
                     <img src="https://cdn.21st.dev/assets/mirror/ca/cadcf059bfbef20421dbbf5dd6841fc51029a434f131f1076f88cfcbef8e49b0.jpg" alt="Core stability flow" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-6 flex flex-col gap-2">
-                        <span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: rgba(255, 255, 255, 0.8); text-transform: uppercase; letter-spacing: 0.1em;">
-                            INTERMEDIATE
-                        </span>
-                        <h3 style="font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 600; color: #FFFFFF; line-height: 1.3;">
-                            Core stability flow
-                        </h3>
+                        <span class="text-xs font-medium text-white/80 uppercase tracking-widest">INTERMEDIATE</span>
+                        <h3 class="text-2xl font-semibold text-white">Core stability flow</h3>
                     </div>
                 </div>
 
                 <div onclick="launchWorkout('Trail sprint challenge')" class="program-card">
                     <img src="https://cdn.21st.dev/assets/mirror/9d/9db96f9491c478fad5f783a184c2e8681abe0c0e07c5c0d3c8104919a289e6f7.jpg" alt="Trail sprint challenge" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-6 flex flex-col gap-2">
-                        <span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: rgba(255, 255, 255, 0.8); text-transform: uppercase; letter-spacing: 0.1em;">
-                            ADVANCED
-                        </span>
-                        <h3 style="font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 600; color: #FFFFFF; line-height: 1.3;">
-                            Trail sprint challenge
-                        </h3>
+                        <span class="text-xs font-medium text-white/80 uppercase tracking-widest">ADVANCED</span>
+                        <h3 class="text-2xl font-semibold text-white">Trail sprint challenge</h3>
                     </div>
                 </div>
 
                 <div onclick="launchWorkout('Full-body bootcamp')" class="program-card">
                     <img src="https://cdn.21st.dev/assets/mirror/ae/ae2d78b3ff54a89f7fdcb8c5c1e9f3cc5e0be99570a816af8a7735e9228badff.jpg" alt="Full-body bootcamp" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-6 flex flex-col gap-2">
-                        <span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: rgba(255, 255, 255, 0.8); text-transform: uppercase; letter-spacing: 0.1em;">
-                            ALL LEVELS
-                        </span>
-                        <h3 style="font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 600; color: #FFFFFF; line-height: 1.3;">
-                            Full-body bootcamp
-                        </h3>
+                        <span class="text-xs font-medium text-white/80 uppercase tracking-widest">ALL LEVELS</span>
+                        <h3 class="text-2xl font-semibold text-white">Full-body bootcamp</h3>
                     </div>
                 </div>
 
                 <div onclick="launchWorkout('Mobility & Recovery')" class="program-card">
                     <img src="https://cdn.21st.dev/assets/mirror/c8/c8c8636ca3521e0b5b883a68d7da589a54be66b739564c08c3a97c2d27fa1322.jpg" alt="Mobility & Recovery" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-6 flex flex-col gap-2">
-                        <span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: rgba(255, 255, 255, 0.8); text-transform: uppercase; letter-spacing: 0.1em;">
-                            RECOVERY
-                        </span>
-                        <h3 style="font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 600; color: #FFFFFF; line-height: 1.3;">
-                            Mobility & Recovery
-                        </h3>
+                        <span class="text-xs font-medium text-white/80 uppercase tracking-widest">RECOVERY</span>
+                        <h3 class="text-2xl font-semibold text-white">Mobility & Recovery</h3>
                     </div>
                 </div>
 
-                <!-- Program Cards Set 2 (for seamless loop) -->
+                <!-- Program Cards Set 2 (Duplicate for Loop) -->
                 <div onclick="launchWorkout('Jumping challenge')" class="program-card">
                     <img src="https://cdn.21st.dev/assets/mirror/4b/4bce7fdac66e89582bda440c7addd609e0a9a02fb4c1d8fb9553c73d0b43ab41.jpg" alt="Jumping challenge" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-6 flex flex-col gap-2">
-                        <span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: rgba(255, 255, 255, 0.8); text-transform: uppercase; letter-spacing: 0.1em;">
-                            BEGINNER
-                        </span>
-                        <h3 style="font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 600; color: #FFFFFF; line-height: 1.3;">
-                            Jumping challenge
-                        </h3>
+                        <span class="text-xs font-medium text-white/80 uppercase tracking-widest">BEGINNER</span>
+                        <h3 class="text-2xl font-semibold text-white">Jumping challenge</h3>
                     </div>
                 </div>
 
                 <div onclick="launchWorkout('Core stability flow')" class="program-card">
                     <img src="https://cdn.21st.dev/assets/mirror/ca/cadcf059bfbef20421dbbf5dd6841fc51029a434f131f1076f88cfcbef8e49b0.jpg" alt="Core stability flow" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-6 flex flex-col gap-2">
-                        <span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: rgba(255, 255, 255, 0.8); text-transform: uppercase; letter-spacing: 0.1em;">
-                            INTERMEDIATE
-                        </span>
-                        <h3 style="font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 600; color: #FFFFFF; line-height: 1.3;">
-                            Core stability flow
-                        </h3>
+                        <span class="text-xs font-medium text-white/80 uppercase tracking-widest">INTERMEDIATE</span>
+                        <h3 class="text-2xl font-semibold text-white">Core stability flow</h3>
                     </div>
                 </div>
 
                 <div onclick="launchWorkout('Trail sprint challenge')" class="program-card">
                     <img src="https://cdn.21st.dev/assets/mirror/9d/9db96f9491c478fad5f783a184c2e8681abe0c0e07c5c0d3c8104919a289e6f7.jpg" alt="Trail sprint challenge" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-6 flex flex-col gap-2">
-                        <span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: rgba(255, 255, 255, 0.8); text-transform: uppercase; letter-spacing: 0.1em;">
-                            ADVANCED
-                        </span>
-                        <h3 style="font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 600; color: #FFFFFF; line-height: 1.3;">
-                            Trail sprint challenge
-                        </h3>
+                        <span class="text-xs font-medium text-white/80 uppercase tracking-widest">ADVANCED</span>
+                        <h3 class="text-2xl font-semibold text-white">Trail sprint challenge</h3>
                     </div>
                 </div>
 
                 <div onclick="launchWorkout('Full-body bootcamp')" class="program-card">
                     <img src="https://cdn.21st.dev/assets/mirror/ae/ae2d78b3ff54a89f7fdcb8c5c1e9f3cc5e0be99570a816af8a7735e9228badff.jpg" alt="Full-body bootcamp" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-6 flex flex-col gap-2">
-                        <span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: rgba(255, 255, 255, 0.8); text-transform: uppercase; letter-spacing: 0.1em;">
-                            ALL LEVELS
-                        </span>
-                        <h3 style="font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 600; color: #FFFFFF; line-height: 1.3;">
-                            Full-body bootcamp
-                        </h3>
+                        <span class="text-xs font-medium text-white/80 uppercase tracking-widest">ALL LEVELS</span>
+                        <h3 class="text-2xl font-semibold text-white">Full-body bootcamp</h3>
                     </div>
                 </div>
 
                 <div onclick="launchWorkout('Mobility & Recovery')" class="program-card">
                     <img src="https://cdn.21st.dev/assets/mirror/c8/c8c8636ca3521e0b5b883a68d7da589a54be66b739564c08c3a97c2d27fa1322.jpg" alt="Mobility & Recovery" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-6 flex flex-col gap-2">
-                        <span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: rgba(255, 255, 255, 0.8); text-transform: uppercase; letter-spacing: 0.1em;">
-                            RECOVERY
-                        </span>
-                        <h3 style="font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 600; color: #FFFFFF; line-height: 1.3;">
-                            Mobility & Recovery
-                        </h3>
+                        <span class="text-xs font-medium text-white/80 uppercase tracking-widest">RECOVERY</span>
+                        <h3 class="text-2xl font-semibold text-white">Mobility & Recovery</h3>
                     </div>
                 </div>
             </div>
         </div>
-
     </section>
 
-    <!-- Workout Studio Modal (Clean, Minimal, Only appears when user clicks training) -->
+    <!-- ============================================== -->
+    <!-- 1. WORKOUT PROGRAMS & EXERCISE LIBRARY -->
+    <!-- ============================================== -->
+    <section id="programs" class="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+            <div>
+                <span class="text-xs font-semibold text-blue-600 uppercase tracking-wider block mb-1">Curated Programs</span>
+                <h2 class="text-3xl font-bold text-[#1a1a1a]">Workout Library</h2>
+                <p class="text-sm text-slate-500 mt-1">Select routine tailored to your fitness level & goals.</p>
+            </div>
+            
+            <!-- Filter Pills -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+                <button onclick="filterWorkouts('all')" id="filter_all" class="filter-pill px-4 py-2 rounded-full text-xs font-medium bg-[#1a1a1a] text-white transition">All</button>
+                <button onclick="filterWorkouts('strength')" id="filter_strength" class="filter-pill px-4 py-2 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:text-black transition">Strength</button>
+                <button onclick="filterWorkouts('hiit')" id="filter_hiit" class="filter-pill px-4 py-2 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:text-black transition">HIIT & Cardio</button>
+                <button onclick="filterWorkouts('mobility')" id="filter_mobility" class="filter-pill px-4 py-2 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:text-black transition">Yoga & Recovery</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="workouts_grid">
+            <!-- Card 1 -->
+            <div class="clean-card rounded-2xl overflow-hidden flex flex-col justify-between workout-item" data-category="strength">
+                <div class="relative h-44 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&auto=format&fit=crop&q=80" alt="Hindu Squats" class="w-full h-full object-cover">
+                    <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/60 text-white backdrop-blur-sm">Strength</span>
+                </div>
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-base text-[#1a1a1a]">Desi Baithak Power</h4>
+                        <p class="text-xs text-slate-500 mt-1">Full lower body explosive strength and knee conditioning.</p>
+                        <div class="flex items-center gap-4 text-xs text-slate-500 mt-3">
+                            <span>⏱️ 20 min</span>
+                            <span>🔥 180 kcal</span>
+                        </div>
+                    </div>
+                    <button onclick="launchWorkout('Desi Baithak Power')" class="mt-4 w-full py-2.5 rounded-xl bg-slate-100 hover:bg-[#1a1a1a] hover:text-white font-medium text-xs text-slate-800 transition">
+                        Start Session
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="clean-card rounded-2xl overflow-hidden flex flex-col justify-between workout-item" data-category="strength">
+                <div class="relative h-44 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&auto=format&fit=crop&q=80" alt="Pushups" class="w-full h-full object-cover">
+                    <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/60 text-white backdrop-blur-sm">Upper Body</span>
+                </div>
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-base text-[#1a1a1a]">Desi Dand Flow</h4>
+                        <p class="text-xs text-slate-500 mt-1">Spinal flexibility, shoulder hypertrophy and triceps drive.</p>
+                        <div class="flex items-center gap-4 text-xs text-slate-500 mt-3">
+                            <span>⏱️ 15 min</span>
+                            <span>🔥 140 kcal</span>
+                        </div>
+                    </div>
+                    <button onclick="launchWorkout('Desi Dand Flow')" class="mt-4 w-full py-2.5 rounded-xl bg-slate-100 hover:bg-[#1a1a1a] hover:text-white font-medium text-xs text-slate-800 transition">
+                        Start Session
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="clean-card rounded-2xl overflow-hidden flex flex-col justify-between workout-item" data-category="hiit">
+                <div class="relative h-44 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&auto=format&fit=crop&q=80" alt="HIIT" class="w-full h-full object-cover">
+                    <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/60 text-white backdrop-blur-sm">HIIT</span>
+                </div>
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-base text-[#1a1a1a]">Core & Calisthenics</h4>
+                        <p class="text-xs text-slate-500 mt-1">Interval bodyweight circuits to incinerate body fat.</p>
+                        <div class="flex items-center gap-4 text-xs text-slate-500 mt-3">
+                            <span>⏱️ 25 min</span>
+                            <span>🔥 260 kcal</span>
+                        </div>
+                    </div>
+                    <button onclick="launchWorkout('Core & Calisthenics')" class="mt-4 w-full py-2.5 rounded-xl bg-slate-100 hover:bg-[#1a1a1a] hover:text-white font-medium text-xs text-slate-800 transition">
+                        Start Session
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="clean-card rounded-2xl overflow-hidden flex flex-col justify-between workout-item" data-category="mobility">
+                <div class="relative h-44 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&auto=format&fit=crop&q=80" alt="Yoga Flow" class="w-full h-full object-cover">
+                    <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/60 text-white backdrop-blur-sm">Mobility</span>
+                </div>
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-base text-[#1a1a1a]">Surya Namaskar 12-Flow</h4>
+                        <p class="text-xs text-slate-500 mt-1">Holistic breath coordination and joint decompression.</p>
+                        <div class="flex items-center gap-4 text-xs text-slate-500 mt-3">
+                            <span>⏱️ 15 min</span>
+                            <span>🔥 120 kcal</span>
+                        </div>
+                    </div>
+                    <button onclick="launchWorkout('Surya Namaskar 12-Flow')" class="mt-4 w-full py-2.5 rounded-xl bg-slate-100 hover:bg-[#1a1a1a] hover:text-white font-medium text-xs text-slate-800 transition">
+                        Start Session
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 2. APPLE-STYLE ACTIVITY RINGS & GOALS -->
+    <!-- ============================================== -->
+    <section id="activity" class="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full">
+        <div class="max-w-2xl mb-8">
+            <span class="text-xs font-semibold text-red-500 uppercase tracking-wider block mb-1">shadcn Apple ActivityCard</span>
+            <h2 class="text-3xl font-bold text-[#1a1a1a]">Today's Activity Rings</h2>
+            <p class="text-sm text-slate-500 mt-1">Close your rings daily to maintain habit momentum.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <!-- Left: Rings Card (7 cols) -->
+            <div class="lg:col-span-7 clean-card p-6 sm:p-8 rounded-3xl">
+                <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-[#FF2D55]">
+                            <i data-lucide="activity" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg text-[#1a1a1a]">Daily Targets</h3>
+                            <span class="text-xs text-slate-400">Apple Fitness Rings</span>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-600">81% Closed</span>
+                </div>
+
+                <!-- 3 Rings -->
+                <div class="grid grid-cols-3 gap-4 mb-8">
+                    <!-- Move -->
+                    <div class="flex flex-col items-center">
+                        <div class="relative w-24 h-24 flex items-center justify-center">
+                            <div class="absolute inset-0 rounded-full border-4 border-slate-100"></div>
+                            <div class="absolute inset-0 rounded-full border-4 border-[#FF2D55] transition-all duration-500" style="clip-path: polygon(0 0, 100% 0, 100% 84%, 0 84%);"></div>
+                            <div class="flex flex-col items-center justify-center">
+                                <span class="text-xl font-bold text-[#1a1a1a]">420</span>
+                                <span class="text-[10px] text-slate-400">cal</span>
+                            </div>
+                        </div>
+                        <span class="mt-2 text-sm font-semibold text-slate-800">Move</span>
+                        <span class="text-xs text-slate-400">84%</span>
+                    </div>
+
+                    <!-- Exercise -->
+                    <div class="flex flex-col items-center">
+                        <div class="relative w-24 h-24 flex items-center justify-center">
+                            <div class="absolute inset-0 rounded-full border-4 border-slate-100"></div>
+                            <div class="absolute inset-0 rounded-full border-4 border-[#2CD758] transition-all duration-500" style="clip-path: polygon(0 0, 100% 0, 100% 78%, 0 78%);"></div>
+                            <div class="flex flex-col items-center justify-center">
+                                <span class="text-xl font-bold text-[#1a1a1a]">35</span>
+                                <span class="text-[10px] text-slate-400">min</span>
+                            </div>
+                        </div>
+                        <span class="mt-2 text-sm font-semibold text-slate-800">Exercise</span>
+                        <span class="text-xs text-slate-400">78%</span>
+                    </div>
+
+                    <!-- Stand -->
+                    <div class="flex flex-col items-center">
+                        <div class="relative w-24 h-24 flex items-center justify-center">
+                            <div class="absolute inset-0 rounded-full border-4 border-slate-100"></div>
+                            <div class="absolute inset-0 rounded-full border-4 border-[#007AFF] transition-all duration-500" style="clip-path: polygon(0 0, 100% 0, 100% 83%, 0 83%);"></div>
+                            <div class="flex flex-col items-center justify-center">
+                                <span class="text-xl font-bold text-[#1a1a1a]">10</span>
+                                <span class="text-[10px] text-slate-400">hrs</span>
+                            </div>
+                        </div>
+                        <span class="mt-2 text-sm font-semibold text-slate-800">Stand</span>
+                        <span class="text-xs text-slate-400">83%</span>
+                    </div>
+                </div>
+
+                <!-- Goals Checklist -->
+                <div class="border-t border-slate-100 pt-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                            <i data-lucide="target" class="w-4 h-4 text-slate-400"></i>
+                            <span>Today's Checkpoints</span>
+                        </h4>
+                        <button onclick="handleAddGoalPrompt()" class="p-1 rounded-full hover:bg-slate-100 text-slate-500 transition">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-2" id="activity_goals_list"></div>
+                </div>
+            </div>
+
+            <!-- Right: Workout Studio Launcher (5 cols) -->
+            <div class="lg:col-span-5 flex flex-col gap-5">
+                <div class="clean-card p-6 sm:p-7 rounded-3xl">
+                    <h3 class="font-bold text-lg text-[#1a1a1a] mb-2">Live AI Camera Studio</h3>
+                    <p class="text-xs text-slate-500 mb-5 leading-relaxed">
+                        Detect reps and check biomechanical depth straight in your browser via real-time computer vision.
+                    </p>
+                    <button onclick="openWorkoutModal('AI Live Coach')" class="w-full py-3.5 rounded-2xl bg-[#1a1a1a] hover:bg-black text-white font-medium text-sm transition shadow-md flex items-center justify-center gap-2">
+                        <i data-lucide="video" class="w-4 h-4"></i>
+                        <span>Launch Camera Session</span>
+                    </button>
+                </div>
+
+                <!-- Recent Workout Log preview -->
+                <div class="clean-card p-6 rounded-3xl">
+                    <h4 class="font-bold text-sm text-[#1a1a1a] mb-3">Session Activity Log</h4>
+                    <div id="history_list" class="divide-y divide-slate-100 text-xs">
+                        <div class="p-3 text-center text-slate-400">No sessions logged yet. Complete a routine above!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 3. SMART NUTRITION & MACRO PLANNER -->
+    <!-- ============================================== -->
+    <section id="nutrition" class="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full">
+        <div class="max-w-2xl mb-8">
+            <span class="text-xs font-semibold text-emerald-600 uppercase tracking-wider block mb-1">Nutrition & Fuel</span>
+            <h2 class="text-3xl font-bold text-[#1a1a1a]">Macro & Calorie Planner</h2>
+            <p class="text-sm text-slate-500 mt-1">Calorie distribution and nutrient targets personalized for energy & recovery.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Macro Summary Card (7 cols) -->
+            <div class="lg:col-span-7 clean-card p-6 sm:p-8 rounded-3xl">
+                <!-- Goal Selector -->
+                <div class="flex items-center gap-2 mb-6">
+                    <button onclick="setMacroGoal('cut')" id="goal_cut" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 transition">Fat Loss</button>
+                    <button onclick="setMacroGoal('maintain')" id="goal_maintain" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#1a1a1a] text-white transition">Maintenance</button>
+                    <button onclick="setMacroGoal('bulk')" id="goal_bulk" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 transition">Muscle Build</button>
+                </div>
+
+                <!-- Macro Bars -->
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-xs font-semibold mb-1">
+                            <span class="text-slate-600">Daily Energy Target</span>
+                            <span class="text-[#1a1a1a] font-bold" id="macro_calories">2,200 kcal</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                            <div class="bg-[#1a1a1a] h-2.5 rounded-full" style="width: 70%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3 pt-4 border-t border-slate-100">
+                        <div class="bg-blue-50/70 p-3.5 rounded-2xl border border-blue-100">
+                            <span class="text-[10px] uppercase font-bold text-blue-600 block">Protein</span>
+                            <span class="text-lg font-bold text-slate-900" id="macro_protein">140g</span>
+                            <span class="text-[10px] text-slate-500 block">Muscle Repair</span>
+                        </div>
+                        <div class="bg-amber-50/70 p-3.5 rounded-2xl border border-amber-100">
+                            <span class="text-[10px] uppercase font-bold text-amber-600 block">Carbs</span>
+                            <span class="text-lg font-bold text-slate-900" id="macro_carbs">220g</span>
+                            <span class="text-[10px] text-slate-500 block">Workout Fuel</span>
+                        </div>
+                        <div class="bg-purple-50/70 p-3.5 rounded-2xl border border-purple-100">
+                            <span class="text-[10px] uppercase font-bold text-purple-600 block">Fats</span>
+                            <span class="text-lg font-bold text-slate-900" id="macro_fats">55g</span>
+                            <span class="text-[10px] text-slate-500 block">Hormonal Health</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suggested Healthy Meals (5 cols) -->
+            <div class="lg:col-span-5 clean-card p-6 sm:p-7 rounded-3xl flex flex-col justify-between">
+                <div>
+                    <h4 class="font-bold text-base text-[#1a1a1a] mb-1">Balanced Meal Templates</h4>
+                    <p class="text-xs text-slate-500 mb-4">Budget-friendly & quick high-protein options.</p>
+                    
+                    <div class="space-y-3 text-xs">
+                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-slate-800 block">Sprouted Moong & Boiled Eggs</span>
+                                <span class="text-slate-500 text-[11px]">28g Protein • 340 kcal</span>
+                            </div>
+                            <span class="text-emerald-600 font-bold">Breakfast</span>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-slate-800 block">Paneer Bhurji / Dal with Roti</span>
+                                <span class="text-slate-500 text-[11px]">24g Protein • 480 kcal</span>
+                            </div>
+                            <span class="text-blue-600 font-bold">Lunch</span>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-slate-800 block">Curd & Roasted Chana Bowl</span>
+                                <span class="text-slate-500 text-[11px]">18g Protein • 220 kcal</span>
+                            </div>
+                            <span class="text-purple-600 font-bold">Snack</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 4. BMI, BODY METRICS & WATER TRACKER -->
+    <!-- ============================================== -->
+    <section id="health" class="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full">
+        <div class="max-w-2xl mb-8">
+            <span class="text-xs font-semibold text-blue-600 uppercase tracking-wider block mb-1">Vitals & Health</span>
+            <h2 class="text-3xl font-bold text-[#1a1a1a]">BMI & Daily Hydration</h2>
+            <p class="text-sm text-slate-500 mt-1">Monitor key body metrics and stay hydrated through your day.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- BMI Calculator -->
+            <div class="clean-card p-6 sm:p-8 rounded-3xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-base text-[#1a1a1a]">BMI & Body Metric Calculator</h3>
+                    <span class="text-xs text-slate-400">Instant result</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Height (cm)</label>
+                        <input id="bmi_height" type="number" value="175" placeholder="175" oninput="calculateBMI()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold focus:outline-none focus:border-black">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Weight (kg)</label>
+                        <input id="bmi_weight" type="number" value="68" placeholder="68" oninput="calculateBMI()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold focus:outline-none focus:border-black">
+                    </div>
+                </div>
+
+                <!-- Calculated Result -->
+                <div class="p-4 rounded-2xl bg-blue-50/60 border border-blue-100 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-slate-500 block">Your BMI Score</span>
+                        <span id="bmi_value" class="text-3xl font-black text-[#1a1a1a]">22.2</span>
+                    </div>
+                    <div class="text-right">
+                        <span id="bmi_category" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">Normal Weight</span>
+                        <span id="bmi_advice" class="text-[11px] text-slate-500 block mt-1">Healthy BMI range (18.5 - 24.9)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Water Intake Tracker -->
+            <div class="clean-card p-6 sm:p-8 rounded-3xl flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-bold text-base text-[#1a1a1a]">Daily Water Intake</h3>
+                        <span class="text-xs font-semibold text-blue-600">Goal: 8 Glasses (2.0L)</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-4">Drinking enough water boosts endurance, prevents cramps and sharpens focus.</p>
+
+                    <div class="flex items-center justify-between p-4 rounded-2xl bg-blue-50/60 border border-blue-100 mb-4">
+                        <div class="flex items-baseline gap-2">
+                            <span id="habit_water_count" class="text-4xl font-black text-blue-600">5</span>
+                            <span class="text-xs text-slate-500">/ 8 glasses consumed</span>
+                        </div>
+                        <span class="text-2xl">💧</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <button onclick="drinkWater()" class="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs rounded-xl shadow-md transition flex items-center justify-center gap-1.5">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span>+ Drink 1 Glass (250ml)</span>
+                    </button>
+                    <button onclick="resetWater()" class="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium text-xs rounded-xl transition">
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 5. COMMUNITY LEADERBOARD & STREAKS -->
+    <!-- ============================================== -->
+    <section id="community" class="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full">
+        <div class="max-w-2xl mb-8">
+            <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider block mb-1">Rankings & Momentum</span>
+            <h2 class="text-3xl font-bold text-[#1a1a1a]">Community Leaderboard</h2>
+            <p class="text-sm text-slate-500 mt-1">Compete with friends, maintain your workout streak and earn badges.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <!-- Streak & Badges (5 cols) -->
+            <div class="lg:col-span-5 space-y-5">
+                <div class="clean-card p-6 rounded-3xl">
+                    <span class="text-xs font-semibold text-amber-600 uppercase">Active Streak</span>
+                    <div class="flex items-baseline gap-2 my-2">
+                        <span id="habit_streak_val" class="text-4xl font-black text-[#1a1a1a]">7</span>
+                        <span class="text-sm font-bold text-amber-500">Days Active 🔥</span>
+                    </div>
+                    <p class="text-xs text-slate-500">Maintain streak for 3 more days to unlock the "Titan" milestone badge.</p>
+                </div>
+
+                <div class="clean-card p-6 rounded-3xl">
+                    <h4 class="font-bold text-sm text-[#1a1a1a] mb-3">Earned Achievements</h4>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-2">
+                            <span class="text-xl">🏆</span>
+                            <div>
+                                <span class="font-bold text-slate-800 block">First 100 Reps</span>
+                                <span class="text-[10px] text-emerald-600">Unlocked</span>
+                            </div>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-2">
+                            <span class="text-xl">💧</span>
+                            <div>
+                                <span class="font-bold text-slate-800 block">Hydration Hero</span>
+                                <span class="text-[10px] text-emerald-600">Unlocked</span>
+                            </div>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-2">
+                            <span class="text-xl">⚡</span>
+                            <div>
+                                <span class="font-bold text-slate-800 block">7-Day Streak</span>
+                                <span class="text-[10px] text-emerald-600">Unlocked</span>
+                            </div>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-2 opacity-60">
+                            <span class="text-xl">👑</span>
+                            <div>
+                                <span class="font-bold text-slate-800 block">Campus Top 3</span>
+                                <span class="text-[10px] text-slate-400">Locked</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Standings Table (7 cols) -->
+            <div class="lg:col-span-7 clean-card rounded-3xl overflow-hidden p-6">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+                    <h3 class="font-bold text-base text-[#1a1a1a]">Weekly Standings</h3>
+                    <span class="text-xs text-slate-400">Real-time points</span>
+                </div>
+                <div id="leaderboard_table_body" class="divide-y divide-slate-100 text-xs">
+                    <!-- Loaded dynamically via JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- FOOTER -->
+    <!-- ============================================== -->
+    <footer class="bg-white border-t border-slate-200 py-10 px-6 text-sm text-slate-500">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2">
+                <span class="font-bold text-[#1a1a1a]">PulseFit</span>
+                <span>© 2026 PulseFit AI. All rights reserved.</span>
+            </div>
+            <div class="flex items-center space-x-6 text-xs font-medium">
+                <a href="#programs" class="hover:text-black">Programs</a>
+                <a href="#activity" class="hover:text-black">Activity</a>
+                <a href="#nutrition" class="hover:text-black">Nutrition</a>
+                <a href="#health" class="hover:text-black">Health</a>
+                <a href="#community" class="hover:text-black">Community</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================== -->
+    <!-- AI WORKOUT STUDIO MODAL (Fullscreen Overlay) -->
+    <!-- ============================================== -->
     <div id="workout_modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 hidden">
         <div class="bg-zinc-950 text-white w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl border border-white/10 flex flex-col max-h-[92vh]">
             <div class="p-4 px-6 border-b border-white/10 flex items-center justify-between bg-zinc-900">
