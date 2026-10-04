@@ -7,7 +7,7 @@ let allFoodItems = [];
 let filteredFoodItems = [];
 let postureTimerInterval = null;
 let postureTimerSeconds = 25 * 60;
-let mobileUrl = "https://off-susan-bouquet-stylish.trycloudflare.com";
+let mobileUrl = "https://despite-baseline-philip-dealing.trycloudflare.com";
 
 // Three.js 3D Visualizer variables
 let scene, camera3D, renderer, trophyMesh;
@@ -1039,7 +1039,7 @@ function closeQrModal() {
 }
 
 function copyMobileUrl() {
-    const url = "https://off-susan-bouquet-stylish.trycloudflare.com";
+    const url = "https://despite-baseline-philip-dealing.trycloudflare.com";
     if (navigator.clipboard) {
         navigator.clipboard.writeText(url).then(() => {
             alert("Mobile link copied to clipboard: " + url);
