@@ -1,4 +1,4 @@
-﻿// ==============================================================
+// ==============================================================
 // FitVibe AI - 3D Visualizer & Full English Client Controller
 // ==============================================================
 
@@ -7,7 +7,7 @@ let allFoodItems = [];
 let filteredFoodItems = [];
 let postureTimerInterval = null;
 let postureTimerSeconds = 25 * 60;
-let mobileUrl = "https://arkansas-bulk-linda-johnston.trycloudflare.com";
+let mobileUrl = "https://off-susan-bouquet-stylish.trycloudflare.com";
 
 // Three.js 3D Visualizer variables
 let scene, camera3D, renderer, trophyMesh;
@@ -470,7 +470,7 @@ async function fetchNetworkInfo() {
         const res = await fetch('/api/network/info');
         const data = await res.json();
         if (data.status === 'success') {
-            mobileUrl = data.public_url || data.https_url || "https://arkansas-bulk-linda-johnston.trycloudflare.com";
+            mobileUrl = data.public_url || data.https_url || "https://off-susan-bouquet-stylish.trycloudflare.com";
             const qrImg = document.getElementById('qr_code_img');
             const qrUrlText = document.getElementById('qr_mobile_url');
             if (qrImg) qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(mobileUrl)}`;
@@ -976,6 +976,74 @@ function handleAddGoalPrompt() {
 }
 
 function viewActivityDetails() {
-    alert("ðŸ“Š Activity Details & Goals Breakdown:\n\nâ€¢ Move: 420/500 cal burned (84%)\nâ€¢ Exercise: 35/45 mins active (77%)\nâ€¢ Stand: 10/12 hours with posture breaks (83%)\n\nKeep moving to close all your daily fitness rings!");
+    alert("📊 Activity Details & Goals Breakdown:\n\n• Move: 420/500 cal burned (84%)\n• Exercise: 35/45 mins active (77%)\n• Stand: 10/12 hours with posture breaks (83%)\n\nKeep moving to close all your daily fitness rings!");
 }
+
+// ==============================================================
+// 11. PulseFit Workout Modal & Flow Controls
+// ==============================================================
+function openWorkoutModal() {
+    const modal = document.getElementById('workout_modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        lucide.createIcons();
+    }
+}
+
+function closeWorkoutModal() {
+    const modal = document.getElementById('workout_modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+        if (typeof isCameraRunning !== 'undefined' && isCameraRunning && typeof toggleCamera === 'function') {
+            toggleCamera();
+        }
+    }
+}
+
+function launchWorkout(programTitle) {
+    const titleEl = document.getElementById('modal_workout_title');
+    if (titleEl) {
+        titleEl.innerText = programTitle;
+    }
+    openWorkoutModal();
+    if (typeof selectExercise === 'function') {
+        const p = (programTitle || '').toLowerCase();
+        if (p.includes('jump')) {
+            selectExercise('Baithak');
+        } else if (p.includes('core')) {
+            selectExercise('Bridge');
+        } else if (p.includes('sprint') || p.includes('bootcamp')) {
+            selectExercise('Dand');
+        } else if (p.includes('mobility')) {
+            selectExercise('SuryaNamaskar');
+        }
+    }
+}
+
+function openQrModal() {
+    const modal = document.getElementById('qr_modal');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeQrModal() {
+    const modal = document.getElementById('qr_modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function copyMobileUrl() {
+    const url = "https://off-susan-bouquet-stylish.trycloudflare.com";
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+            alert("Mobile link copied to clipboard: " + url);
+        }).catch(() => {
+            prompt("Copy this URL:", url);
+        });
+    } else {
+        prompt("Copy this URL:", url);
+    }
+}
+
+
 
